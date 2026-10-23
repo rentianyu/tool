@@ -1,11 +1,11 @@
 {
   "name": "URL 编辑器",
-  "summary": "拆解链接、勾选编辑参数，一键复制 / 跳转 / 发起请求看响应",
+  "summary": "全协议 URL 拆解与参数编辑，支持 URL 解码、复制、跳转与请求调试",
   "category": "网络",
   "icon": "🔗",
   "order": 10,
-  "tags": ["url", "query", "params", "request", "http", "debug"],
-  "keywords": ["链接", "参数", "拆解", "编辑", "请求", "调试", "query", "接口"],
+  "tags": ["url", "scheme", "query", "params", "request", "decode"],
+  "keywords": ["链接", "协议", "参数", "拆解", "编辑", "解码", "请求", "调试", "scheme", "mailto", "weixin"],
   "backend": true,
   "status": "stable",
   "since": "2026-10-23"

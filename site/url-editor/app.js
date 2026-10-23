@@ -1,24 +1,45 @@
 import { copy, escapeHtml, toast } from "/assets/app.js";
 import { fmtBytes, message } from "/assets/lib/dom.js";
-import { buildUrl, emptyParam, extractUrl, parseUrl, splitPath } from "/url-editor/core.js";
+import {
+  buildUrl,
+  canRequest,
+  decodeUrlText,
+  emptyParam,
+  extractUrl,
+  parseUrl,
+  splitPath,
+} from "/url-editor/core.js";
 
 const $ = (id) => document.getElementById(id);
 const STORE_KEY = "tool.urlEditor.state";
 
-let state = { protocol: "https", host: "", port: "", path: "/", hash: "", params: [] };
+let state = { protocol: "https", hierarchical: true, host: "", port: "", path: "/", hash: "", params: [] };
 let currentUrl = "";
 
 /* ---------------- 表单 <-> 状态 ---------------- */
+function syncHierarchy() {
+  const hierarchical = $("hierarchical").checked;
+  $("host").disabled = !hierarchical;
+  $("port").disabled = !hierarchical;
+  $("host").style.opacity = hierarchical ? "1" : "0.45";
+  $("port").style.opacity = hierarchical ? "1" : "0.45";
+  $("pathLabel").textContent = hierarchical ? "路径（path / 路由）" : "主体内容（scheme: 之后）";
+  $("path").placeholder = hierarchical ? "/api/list" : "a@b.com ／ 123456 ／ text/plain,hello";
+}
+
 function fillForm() {
-  $("protocol").value = state.protocol === "http" ? "http" : "https";
-  $("host").value = state.host;
-  $("port").value = state.port;
-  $("path").value = state.path;
-  $("hash").value = state.hash;
+  $("protocol").value = state.protocol || "https";
+  $("hierarchical").checked = state.hierarchical !== false;
+  $("host").value = state.host || "";
+  $("port").value = state.port || "";
+  $("path").value = state.path || "";
+  $("hash").value = state.hash || "";
+  syncHierarchy();
 }
 
 function readForm() {
-  state.protocol = $("protocol").value;
+  state.protocol = $("protocol").value.trim().replace(/:$/, "").toLowerCase() || "https";
+  state.hierarchical = $("hierarchical").checked;
   state.host = $("host").value.trim();
   state.port = $("port").value.trim();
   state.path = $("path").value;
@@ -97,14 +118,22 @@ $("addParam").addEventListener("click", () => {
 /* ---------------- 生成结果 ---------------- */
 function update() {
   readForm();
-  const info = splitPath(state.path);
-  $("pathInfo").textContent = state.host
-    ? `目录 ${info.dir} · 末段 ${info.last || "（无）"} · 层级 ${info.depth}`
-    : "";
+  if (state.hierarchical) {
+    const info = splitPath(state.path);
+    $("pathInfo").textContent = state.host
+      ? `目录 ${info.dir} · 末段 ${info.last || "（无）"} · 层级 ${info.depth}`
+      : "";
+  } else {
+    $("pathInfo").textContent = "非层级结构 · 无主机部分";
+  }
+
+  const requestable = canRequest(state.protocol);
+  $("send").disabled = !requestable;
+  $("send").title = requestable ? "仅 http / https 链接可发起请求" : `${state.protocol}: 协议无法发起 HTTP 请求，可复制或跳转`;
+
   try {
     currentUrl = buildUrl(state);
     $("result").textContent = currentUrl;
-    $("send").disabled = false;
     message($("msg"), "", "ok");
     persist();
   } catch (err) {
@@ -115,32 +144,47 @@ function update() {
   }
 }
 
-/* ---------------- 解析 ---------------- */
+/* ---------------- 解析 / 解码 ---------------- */
 function doParse() {
   const res = parseUrl(extractUrl($("raw").value));
   if (!res.ok) {
     message($("msg"), res.error, "err");
-    return;
+    return false;
   }
   state = res.state;
   $("parseHint").textContent = res.hadProtocol ? "" : "已自动补全 https://";
   fillForm();
   renderParams();
   update();
-  message($("msg"), `解析成功 · ${state.params.length} 个参数`, "ok");
+  return true;
 }
 
-$("parse").addEventListener("click", doParse);
+$("parse").addEventListener("click", () => {
+  if (doParse()) message($("msg"), `解析成功 · ${state.params.length} 个参数`, "ok");
+});
+
+$("decode").addEventListener("click", () => {
+  const source = $("raw").value.trim();
+  if (!source) return toast("先粘贴一个链接");
+  const res = decodeUrlText(source);
+  if (!res.changed) {
+    message($("msg"), "没有可解码的 %xx 内容", "warn");
+    return;
+  }
+  $("raw").value = res.text;
+  if (doParse()) message($("msg"), `已解码 ${res.rounds} 层并重新解析`, "ok");
+});
+
 $("raw").addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
-    doParse();
+    $("parse").click();
   }
 });
 
 $("clear").addEventListener("click", () => {
   $("raw").value = "";
-  state = { protocol: "https", host: "", port: "", path: "/", hash: "", params: [] };
+  state = { protocol: "https", hierarchical: true, host: "", port: "", path: "/", hash: "", params: [] };
   fillForm();
   renderParams();
   $("result").textContent = "";
@@ -156,6 +200,11 @@ $("clear").addEventListener("click", () => {
   $(id).addEventListener("change", update);
 });
 
+$("hierarchical").addEventListener("change", () => {
+  syncHierarchy();
+  update();
+});
+
 /* ---------------- 操作按钮 ---------------- */
 $("copyLink").addEventListener("click", () => {
   if (!currentUrl) return toast("还没有生成链接");
@@ -164,7 +213,10 @@ $("copyLink").addEventListener("click", () => {
 
 $("openLink").addEventListener("click", () => {
   if (!currentUrl) return toast("还没有生成链接");
-  window.open(currentUrl, "_blank", "noopener,noreferrer");
+  const win = window.open(currentUrl, "_blank", "noopener,noreferrer");
+  if (!win && canRequest(state.protocol)) {
+    message($("msg"), "浏览器拦截了新窗口，请允许本站弹窗后重试", "warn");
+  }
 });
 
 /* ---------------- 请求 ---------------- */
@@ -253,6 +305,11 @@ async function requestViaProxy(url) {
 
 $("send").addEventListener("click", async () => {
   if (!currentUrl) return toast("还没有生成链接");
+  if (!canRequest(state.protocol)) {
+    message($("msg"), `${state.protocol}: 协议不支持发起 HTTP 请求，可用「复制」或「新标签打开」`, "warn");
+    return;
+  }
+
   const btn = $("send");
   btn.disabled = true;
   btn.textContent = "请求中…";
@@ -281,7 +338,7 @@ $("send").addEventListener("click", async () => {
   } catch (err) {
     message($("msg"), `调用接口失败：${err.message}`, "err");
   } finally {
-    btn.disabled = false;
+    btn.disabled = !canRequest(state.protocol);
     btn.textContent = "请求";
   }
 });
@@ -300,9 +357,9 @@ $("send").addEventListener("click", async () => {
   } catch {
     saved = null;
   }
-  if (saved && saved.host) {
-    state = saved;
-    $("raw").value = buildUrl(saved);
+  if (saved && (saved.host || saved.path)) {
+    state = { hierarchical: true, ...saved };
+    $("raw").value = buildUrl(state);
     fillForm();
     renderParams();
     update();

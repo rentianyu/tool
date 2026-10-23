@@ -30,8 +30,9 @@
         <span class="mut small" id="parseHint"></span>
       </div>
       <div class="row">
-        <input type="text" id="raw" placeholder="https://example.com/api/list?page=1&size=20 （可省略 https://）" style="flex:1;min-width:240px">
+        <input type="text" id="raw" placeholder="https://example.com/api?x=1 ｜ mailto:a@b.com ｜ weixin://… ｜ 被编码的整串也可以" style="flex:1;min-width:240px">
         <button class="btn btn-primary" id="parse" type="button">解析</button>
+        <button class="btn" id="decode" type="button" title="把 %xx 还原成可读字符，并回填到输入框">URL 解码</button>
         <button class="btn btn-ghost" id="clear" type="button">清空</button>
       </div>
       <div class="msg" id="msg" style="margin-top:8px"></div>
@@ -44,22 +45,34 @@
       </div>
       <div class="grid-2">
         <div>
-          <label class="lbl">协议</label>
-          <select id="protocol">
-            <option value="https">https</option>
-            <option value="http">http</option>
-          </select>
-          <label class="lbl" style="margin-top:8px">域名（host）</label>
+          <label class="lbl">协议（scheme）</label>
+          <div class="row" style="gap:8px;flex-wrap:nowrap">
+            <input type="text" id="protocol" class="mono" list="schemes" placeholder="https" style="flex:1;min-width:0">
+            <label class="row small mut" style="flex:none;white-space:nowrap" title="取消勾选后按 scheme:主体 的形式构建（mailto / tel / data 等）">
+              <input type="checkbox" id="hierarchical" checked> 含主机（//）
+            </label>
+          </div>
+          <datalist id="schemes">
+            <option value="https"></option><option value="http"></option>
+            <option value="ftp"></option><option value="ftps"></option>
+            <option value="ws"></option><option value="wss"></option>
+            <option value="ssh"></option><option value="sftp"></option>
+            <option value="file"></option><option value="mailto"></option>
+            <option value="tel"></option><option value="sms"></option>
+            <option value="data"></option><option value="urn"></option>
+            <option value="magnet"></option>
+          </datalist>
+          <label class="lbl" style="margin-top:8px">主机（host / 域名）</label>
           <input type="text" id="host" class="mono" placeholder="example.com">
         </div>
         <div>
           <label class="lbl">端口</label>
-          <input type="text" id="port" class="mono" placeholder="留空表示默认（443/80）">
+          <input type="text" id="port" class="mono" placeholder="留空表示默认（443 / 80）">
           <label class="lbl" style="margin-top:8px">锚点（# 之后）</label>
           <input type="text" id="hash" class="mono" placeholder="留空表示没有">
         </div>
       </div>
-      <label class="lbl" style="margin-top:10px">路径（path / 路由）</label>
+      <label class="lbl" style="margin-top:10px" id="pathLabel">路径（path / 路由）</label>
       <input type="text" id="path" class="mono" placeholder="/api/list">
     </div>
 
@@ -85,7 +98,7 @@
         <span class="row">
           <button class="btn btn-sm" id="copyLink" type="button">复制链接</button>
           <button class="btn btn-sm" id="openLink" type="button">新标签打开</button>
-          <button class="btn btn-sm btn-primary" id="send" type="button">请求</button>
+          <button class="btn btn-sm btn-primary" id="send" type="button" title="仅 http / https 链接可发起请求">请求</button>
         </span>
       </div>
       <pre class="out" id="result" style="min-height:48px"></pre>

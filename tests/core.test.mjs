@@ -326,8 +326,8 @@ ok("urlEditor: 端口与 http", () => {
 });
 ok("urlEditor: 非法输入", () => {
   assert.strictEqual(UE.parseUrl("").ok, false);
-  assert.strictEqual(UE.parseUrl("ftp://a.com/x").ok, false);
   assert.strictEqual(UE.parseUrl("ht tp://a.com").ok, false);
+  assert.strictEqual(UE.parseUrl("ftp://a.com/x").ok, true);
 });
 ok("urlEditor: 构建往返一致", () => {
   const raw = "https://example.com/a/b?id=1&name=%E4%B8%AD%E6%96%87#top";
@@ -369,6 +369,107 @@ ok("urlEditor: 路径拆解", () => {
 ok("urlEditor: extractUrl", () => {
   assert.strictEqual(UE.extractUrl("看这个 https://a.com/x?y=1 。"), "https://a.com/x?y=1");
   assert.strictEqual(UE.extractUrl('"https://b.com/z"'), "https://b.com/z");
+});
+
+/* ---------------- URL 编辑器：全协议 ---------------- */
+ok("urlEditor: mailto 非层级解析", () => {
+  const r = UE.parseUrl("mailto:a@b.com?subject=hi%20there&body=%E4%BD%A0%E5%A5%BD");
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.state.protocol, "mailto");
+  assert.strictEqual(r.state.hierarchical, false);
+  assert.strictEqual(r.state.host, "");
+  assert.strictEqual(r.state.path, "a@b.com");
+  assert.strictEqual(r.state.params[0].value, "hi there");
+  assert.strictEqual(r.state.params[1].value, "你好");
+});
+ok("urlEditor: tel 非层级", () => {
+  const r = UE.parseUrl("tel:13800138000");
+  assert.strictEqual(r.state.protocol, "tel");
+  assert.strictEqual(r.state.hierarchical, false);
+  assert.strictEqual(r.state.path, "13800138000");
+  assert.strictEqual(UE.buildUrl(r.state), "tel:13800138000");
+});
+ok("urlEditor: data URI 往返", () => {
+  const raw = "data:text/plain,hello";
+  const r = UE.parseUrl(raw);
+  assert.strictEqual(r.state.protocol, "data");
+  assert.strictEqual(r.state.hierarchical, false);
+  assert.strictEqual(UE.buildUrl(r.state), raw);
+});
+ok("urlEditor: 自定义 scheme 带 //", () => {
+  const r = UE.parseUrl("weixin://dl/chat?id=1#top");
+  assert.strictEqual(r.state.protocol, "weixin");
+  assert.strictEqual(r.state.hierarchical, true);
+  assert.strictEqual(r.state.host, "dl");
+  assert.strictEqual(r.state.path, "/chat");
+  assert.strictEqual(UE.buildUrl(r.state), "weixin://dl/chat?id=1#top");
+});
+ok("urlEditor: file:/// 空主机", () => {
+  const r = UE.parseUrl("file:///etc/passwd");
+  assert.strictEqual(r.state.protocol, "file");
+  assert.strictEqual(r.state.hierarchical, true);
+  assert.strictEqual(r.state.host, "");
+  assert.strictEqual(UE.buildUrl(r.state), "file:///etc/passwd");
+});
+ok("urlEditor: ftp/ssh 层级", () => {
+  assert.strictEqual(UE.parseUrl("ftp://ftp.example.com:2121/pub/x").state.port, "2121");
+  assert.strictEqual(UE.parseUrl("ssh://git@host/x").state.host, "git@host");
+  assert.strictEqual(UE.buildUrl(UE.parseUrl("ssh://git@host/x").state), "ssh://git@host/x");
+});
+ok("urlEditor: mailto 构建", () => {
+  const built = UE.buildUrl({
+    protocol: "mailto",
+    hierarchical: false,
+    host: "",
+    port: "",
+    path: "a@b.com",
+    hash: "",
+    params: [{ key: "subject", value: "hi there", enabled: true }],
+  });
+  assert.strictEqual(built, "mailto:a@b.com?subject=hi%20there");
+});
+ok("urlEditor: 协议大小写归一", () => {
+  const r = UE.parseUrl("HTTPS://Example.COM/A");
+  assert.strictEqual(r.state.protocol, "https");
+  assert.strictEqual(r.state.host, "example.com");
+});
+ok("urlEditor: 非法协议报错", () => {
+  assert.throws(() => UE.buildUrl({ protocol: "1abc", host: "a.com" }));
+  assert.throws(() => UE.buildUrl({ protocol: "ht tp", host: "a.com" }));
+  assert.strictEqual(UE.buildUrl({ protocol: "", host: "a.com" }), "https://a.com/");
+});
+ok("urlEditor: canRequest 只认 http/https", () => {
+  assert.strictEqual(UE.canRequest("https"), true);
+  assert.strictEqual(UE.canRequest("HTTPS"), true);
+  assert.strictEqual(UE.canRequest("http"), true);
+  assert.strictEqual(UE.canRequest("mailto"), false);
+  assert.strictEqual(UE.canRequest("ftp"), false);
+  assert.strictEqual(UE.canRequest("weixin"), false);
+});
+ok("urlEditor: URL 解码单层", () => {
+  const r = UE.decodeUrlText("https%3A%2F%2Fa.com%2Fx%3Fb%3D1");
+  assert.strictEqual(r.text, "https://a.com/x?b=1");
+  assert.strictEqual(r.rounds, 1);
+  assert.strictEqual(r.changed, true);
+});
+ok("urlEditor: URL 解码多层", () => {
+  const r = UE.decodeUrlText("https%253A%252F%252Fa.com%252Fx");
+  assert.strictEqual(r.text, "https://a.com/x");
+  assert.strictEqual(r.rounds, 2);
+});
+ok("urlEditor: URL 解码中文", () => {
+  const r = UE.decodeUrlText("https://a.com/%E4%B8%AD%E6%96%87?q=%E6%B5%8B%E8%AF%95");
+  assert.ok(r.text.includes("中文"));
+  assert.ok(r.text.includes("测试"));
+});
+ok("urlEditor: URL 解码无变化", () => {
+  const r = UE.decodeUrlText("https://a.com/plain");
+  assert.strictEqual(r.changed, false);
+  assert.strictEqual(r.text, "https://a.com/plain");
+});
+ok("urlEditor: extractUrl 支持任意 scheme", () => {
+  assert.strictEqual(UE.extractUrl("看 weixin://dl/chat?id=1 。"), "weixin://dl/chat?id=1");
+  assert.strictEqual(UE.extractUrl("发我：mailto:a@b.com"), "mailto:a@b.com");
 });
 
 /* ---------------- 结果 ---------------- */
