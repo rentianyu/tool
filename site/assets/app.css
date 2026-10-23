@@ -286,6 +286,7 @@ kbd {
   vertical-align: 1px;
 }
 .badge-warn { background: rgba(240, 164, 75, 0.14); color: var(--warn); }
+.badge-ext { background: rgba(120, 132, 148, 0.16); color: var(--fg-mute); }
 
 .empty { color: var(--fg-mute); text-align: center; padding: 48px 0; font-size: 13px; }
 

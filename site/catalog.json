@@ -1,6 +1,6 @@
 {
-  "generated": "2026-10-23 16:22:24 +08",
-  "count": 11,
+  "generated": "2026-10-23 17:27:27 +08",
+  "count": 12,
   "tools": [
     {
       "slug": "json",
@@ -27,7 +27,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "base64",
@@ -51,7 +52,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "url",
@@ -77,7 +79,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "radix",
@@ -103,7 +106,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "diff",
@@ -127,7 +131,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "timestamp",
@@ -154,7 +159,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "hash",
@@ -179,7 +185,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "jwt",
@@ -205,7 +212,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "random",
@@ -231,7 +239,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     },
     {
       "slug": "url-editor",
@@ -263,7 +272,37 @@
       ],
       "backend": true,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
+    },
+    {
+      "slug": "media",
+      "url": "/media",
+      "name": "媒体编辑",
+      "summary": "FFmpeg 命令查询与在线生成（外部服务 ffmpegtool.com）",
+      "category": "媒体",
+      "icon": "🎬",
+      "tags": [
+        "ffmpeg",
+        "video",
+        "audio",
+        "media",
+        "convert"
+      ],
+      "keywords": [
+        "媒体",
+        "视频",
+        "音频",
+        "转码",
+        "剪辑",
+        "压缩",
+        "ffmpeg",
+        "格式转换"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23",
+      "external": "https://ffmpegtool.com/ffmpeg-command"
     },
     {
       "slug": "regex",
@@ -288,7 +327,8 @@
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23"
+      "since": "2026-10-23",
+      "external": ""
     }
   ]
 }

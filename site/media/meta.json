@@ -1,0 +1,13 @@
+{
+  "name": "媒体编辑",
+  "summary": "FFmpeg 命令查询与在线生成（外部服务 ffmpegtool.com）",
+  "category": "媒体",
+  "icon": "🎬",
+  "order": 10,
+  "tags": ["ffmpeg", "video", "audio", "media", "convert"],
+  "keywords": ["媒体", "视频", "音频", "转码", "剪辑", "压缩", "ffmpeg", "格式转换"],
+  "backend": false,
+  "status": "stable",
+  "external": "https://ffmpegtool.com/ffmpeg-command",
+  "since": "2026-10-23"
+}

@@ -37,6 +37,7 @@ CATEGORY_ORDER = [
     "生成器",
     "网络",
     "图片",
+    "媒体",
     "开发辅助",
     "其他",
 ]
@@ -86,6 +87,13 @@ def collect_tools():
 
 def check_tool(tool):
     slug, folder, meta = tool["slug"], tool["dir"], tool["meta"]
+
+    # 外链型工具（meta.external）：没有自己的页面，构建时自动生成跳转页
+    external = str(meta.get("external", "")).strip()
+    if external:
+        if not re.match(r"^https?://[^/\s]+", external):
+            errors.append(f"{slug}: external 必须是 http(s) 绝对地址（当前：{external}）")
+        return
 
     index = folder / "index.html"
     if not index.exists():
@@ -142,15 +150,18 @@ def render(tools, build_time):
                 + list(meta.get("keywords", []))
             ).lower()
             icon = meta.get("icon") or "•"
+            is_ext = bool(str(meta.get("external", "")).strip())
             badge = '<i class="badge">API</i>' if meta.get("backend") else ""
             beta = '<i class="badge badge-warn">beta</i>' if meta.get("status") == "beta" else ""
+            ext_badge = '<i class="badge badge-ext">外链</i>' if is_ext else ""
+            arrow = "↗" if is_ext else "→"
             items.append(
                 f'<li class="tool-item" data-key="{escape(key)}">'
                 f'<a href="/{t["slug"]}" data-slug="{t["slug"]}">'
                 f'<span class="ico">{escape(icon)}</span>'
-                f'<span class="t-body"><b>{escape(meta.get("name", t["slug"]))}{badge}{beta}</b>'
+                f'<span class="t-body"><b>{escape(meta.get("name", t["slug"]))}{badge}{beta}{ext_badge}</b>'
                 f'<span class="desc">{escape(meta.get("summary", ""))}</span></span>'
-                f'<span class="arrow">→</span></a></li>'
+                f'<span class="arrow">{arrow}</span></a></li>'
             )
         blocks.append(
             f'<section class="group" id="cat-{cat}" data-cat="{cat}">'
@@ -168,6 +179,58 @@ def render(tools, build_time):
         .replace("{{BUILD_TIME}}", build_time)
     )
     return html
+
+
+# 外链型工具的跳转页模板（{{TARGET}} 用于 href/meta，{{TARGET_JS}} 用于 JS 字符串字面量）
+JUMP_TPL = """<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{NAME}} · 跳转中…</title>
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content="1;url={{TARGET}}">
+  <link rel="canonical" href="{{TARGET}}">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <style>
+    body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+           font: 14px/1.7 -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+           background: #f6f8fb; color: #1b2330; }
+    .box { max-width: 460px; margin: 24px; padding: 26px 30px; background: #fff; text-align: center;
+           border: 1px solid #e3e8ef; border-radius: 12px; box-shadow: 0 2px 12px rgba(16, 24, 40, .06); }
+    h1 { font-size: 16px; margin: 0 0 6px; }
+    p { margin: 6px 0; color: #5c6a7a; font-size: 13px; }
+    code { font-size: 12px; word-break: break-all; color: #2563eb; }
+    a.btn { display: inline-block; margin-top: 14px; padding: 7px 16px; border-radius: 8px;
+            background: #2563eb; color: #fff; text-decoration: none; font-size: 13px; }
+    a.back { display: inline-block; margin-top: 14px; margin-left: 10px; font-size: 13px; color: #5c6a7a; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>{{NAME}}</h1>
+    <p>{{SUMMARY}}</p>
+    <p>外部服务，正在跳转到 <code>{{HOST}}</code> …</p>
+    <a class="btn" href="{{TARGET}}" rel="noreferrer noopener">立即前往</a>
+    <a class="back" href="/">返回工具箱</a>
+  </div>
+  <script>location.replace({{TARGET_JS}});</script>
+</body>
+</html>
+"""
+
+
+def render_jump(tool, target):
+    """生成外链工具的跳转页（打开即跳，附手动链接兜底）"""
+    meta = tool["meta"]
+    host = re.sub(r"^https?://", "", target).split("/")[0]
+    return (
+        JUMP_TPL.replace("{{NAME}}", escape(meta.get("name", tool["slug"])))
+        .replace("{{SUMMARY}}", escape(meta.get("summary", "")))
+        .replace("{{TARGET_JS}}", json.dumps(target, ensure_ascii=False))
+        .replace("{{TARGET}}", escape(target))
+        .replace("{{HOST}}", escape(host))
+    )
 
 
 def escape(text):
@@ -221,6 +284,7 @@ def main():
                 "backend": bool(t["meta"].get("backend")),
                 "status": t["meta"].get("status", "stable"),
                 "since": t["meta"].get("since", ""),
+                "external": str(t["meta"].get("external", "")).strip(),
             }
             for t in tools
         ],
@@ -231,6 +295,15 @@ def main():
         for w in warnings:
             print("  ⚠", w)
         return 0
+
+    # 外链型工具：自动生成 /<slug> 跳转页（目录里已有 index.html 则不覆盖）
+    jump_pages = 0
+    for t in tools:
+        target = str(t["meta"].get("external", "")).strip()
+        page = t["dir"] / "index.html"
+        if target and not page.exists():
+            page.write_text(render_jump(t, target), encoding="utf-8")
+            jump_pages += 1
 
     (SITE / "catalog.json").write_text(
         json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -248,6 +321,8 @@ def main():
     print(f"✓ 构建完成：{len(tools)} 个工具 / {len({t['meta'].get('category','其他') for t in tools})} 个分类")
     print(f"  site/index.html      {len(render(tools, build_time))} 字节")
     print(f"  site/catalog.json    {len(catalog['tools'])} 条")
+    if jump_pages:
+        print(f"  外链跳转页           {jump_pages} 个")
     for w in warnings:
         print("  ⚠", w)
     return 0
