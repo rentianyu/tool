@@ -1,0 +1,262 @@
+{
+  "generated": "2026-10-23 13:47:54 +08",
+  "count": 10,
+  "tools": [
+    {
+      "slug": "json",
+      "url": "/json",
+      "name": "JSON 格式化",
+      "summary": "格式化、压缩、键名排序、校验定位与路径提取",
+      "category": "编码转换",
+      "icon": "{}",
+      "tags": [
+        "json",
+        "format",
+        "pretty",
+        "minify",
+        "validate"
+      ],
+      "keywords": [
+        "格式化",
+        "美化",
+        "压缩",
+        "校验",
+        "路径",
+        "提取",
+        "排序"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "base64",
+      "url": "/base64",
+      "name": "Base64 编解码",
+      "summary": "文本与文件转 Base64，支持 URL-safe 与自动补 padding",
+      "category": "编码转换",
+      "icon": "64",
+      "tags": [
+        "base64",
+        "encode",
+        "decode",
+        "dataurl"
+      ],
+      "keywords": [
+        "编码",
+        "解码",
+        "转码",
+        "图片转base64",
+        "data url"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "url",
+      "url": "/url",
+      "name": "URL 编解码",
+      "summary": "URL 编码解码与结构拆解（协议/域名/路径/查询参数）",
+      "category": "编码转换",
+      "icon": "%",
+      "tags": [
+        "url",
+        "uri",
+        "encode",
+        "decode",
+        "query"
+      ],
+      "keywords": [
+        "编码",
+        "解码",
+        "转义",
+        "链接",
+        "参数",
+        "解析"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "radix",
+      "url": "/radix",
+      "name": "进制转换",
+      "summary": "2–36 进制大整数互转，文本与 HEX/BIN 字节互转",
+      "category": "编码转换",
+      "icon": "0x",
+      "tags": [
+        "radix",
+        "hex",
+        "binary",
+        "base36",
+        "convert"
+      ],
+      "keywords": [
+        "进制",
+        "十六进制",
+        "二进制",
+        "八进制",
+        "转换",
+        "字节"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "diff",
+      "url": "/diff",
+      "name": "文本对比",
+      "summary": "按行 diff（LCS），标出新增、删除与相同行",
+      "category": "文本处理",
+      "icon": "±",
+      "tags": [
+        "diff",
+        "compare",
+        "text",
+        "patch"
+      ],
+      "keywords": [
+        "对比",
+        "比较",
+        "差异",
+        "改动",
+        "diff"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "timestamp",
+      "url": "/timestamp",
+      "name": "时间戳转换",
+      "summary": "Unix 时间戳与日期互转，含本地时间、UTC、ISO 与相对时间",
+      "category": "时间日期",
+      "icon": "⏱",
+      "tags": [
+        "timestamp",
+        "unix",
+        "date",
+        "time",
+        "iso"
+      ],
+      "keywords": [
+        "时间戳",
+        "日期",
+        "转换",
+        "utc",
+        "iso",
+        "秒",
+        "毫秒"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "hash",
+      "url": "/hash",
+      "name": "哈希计算",
+      "summary": "MD5 / SHA-1 / SHA-256 / SHA-384 / SHA-512，支持文本与文件",
+      "category": "加密哈希",
+      "icon": "#",
+      "tags": [
+        "hash",
+        "md5",
+        "sha1",
+        "sha256",
+        "checksum"
+      ],
+      "keywords": [
+        "哈希",
+        "摘要",
+        "校验",
+        "文件校验",
+        "签名"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "jwt",
+      "url": "/jwt",
+      "name": "JWT 解析",
+      "summary": "解码 Header/Payload、查看过期时间、校验 HMAC 签名",
+      "category": "加密哈希",
+      "icon": "🔑",
+      "tags": [
+        "jwt",
+        "token",
+        "jose",
+        "hmac",
+        "auth"
+      ],
+      "keywords": [
+        "令牌",
+        "解码",
+        "过期",
+        "签名",
+        "鉴权",
+        "登录"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "random",
+      "url": "/random",
+      "name": "随机生成",
+      "summary": "UUID v4、随机字符串、强密码、随机整数（CSPRNG 安全随机）",
+      "category": "生成器",
+      "icon": "🎲",
+      "tags": [
+        "uuid",
+        "random",
+        "password",
+        "nanoid",
+        "token"
+      ],
+      "keywords": [
+        "随机",
+        "密码",
+        "令牌",
+        "密钥",
+        "uuid",
+        "字符串"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "regex",
+      "url": "/regex",
+      "name": "正则测试",
+      "summary": "实时匹配高亮、分组捕获与替换预览",
+      "category": "开发辅助",
+      "icon": ".*",
+      "tags": [
+        "regex",
+        "regexp",
+        "match",
+        "replace"
+      ],
+      "keywords": [
+        "正则",
+        "匹配",
+        "替换",
+        "捕获",
+        "分组",
+        "表达式"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    }
+  ]
+}

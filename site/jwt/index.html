@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JWT 解析 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/jwt/app.js"></script>
+</head>
+<body class="page-tool" data-tool="jwt">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">JWT（支持带 Bearer 前缀）</span>
+        <button class="btn btn-sm btn-ghost" id="clear" type="button">清空</button>
+      </div>
+      <textarea id="input" class="mono-sm" spellcheck="false" placeholder="eyJhbGciOi... 粘贴后自动解析，内容不会上传服务器"></textarea>
+      <div class="row" style="margin-top:10px">
+        <input type="text" id="secret" placeholder="校验签名用的密钥（HMAC，可留空）" style="flex:1;min-width:220px">
+        <select id="algo" style="width:auto">
+          <option value="">按 header 自动</option>
+          <option value="HS256">HS256</option>
+          <option value="HS384">HS384</option>
+          <option value="HS512">HS512</option>
+        </select>
+        <button class="btn" id="verify" type="button">校验签名</button>
+        <span class="chip" id="sigChip" hidden></span>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Header</span></div>
+        <pre class="out" id="header" style="min-height:120px;max-height:300px"></pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Payload</span></div>
+        <pre class="out" id="payload" style="min-height:120px;max-height:300px"></pre>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">时间与状态</span></div>
+      <table class="kv" id="claims"></table>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工具箱 · tool.xbta.cc</title>
+  <meta name="description" content="常用小工具合集：JSON 格式化、Base64、URL 编解码、时间戳、哈希、JWT、正则测试、文本对比等，纯浏览器本地处理。">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body class="page-nav">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="/"><span class="logo-mark">⌘</span>工具箱</a>
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15Zm4.8 12.3L21 21"/></svg>
+        <input id="q" type="search" placeholder="搜索工具 / 快捷键 / 用途…" autocomplete="off" spellcheck="false">
+        <kbd>/</kbd>
+      </div>
+      <button class="icon-btn" id="theme" type="button" title="切换主题" aria-label="切换主题">◐</button>
+    </div>
+  </header>
+
+  <nav class="catbar">
+    <div class="catbar-inner"><a href="#cat-编码转换">编码转换<span>4</span></a><a href="#cat-文本处理">文本处理<span>1</span></a><a href="#cat-时间日期">时间日期<span>1</span></a><a href="#cat-加密哈希">加密哈希<span>2</span></a><a href="#cat-生成器">生成器<span>1</span></a><a href="#cat-开发辅助">开发辅助<span>1</span></a></div>
+  </nav>
+
+  <main class="wrap">
+    <div class="nav-meta">
+      <span>共 <b>10</b> 个工具 · <b>6</b> 个分类</span>
+      <span class="dim">全部在浏览器本地运行，不上传数据</span>
+    </div>
+
+    <section class="group" id="recent-group" hidden>
+      <h2>最近使用<span class="count" id="recent-count"></span></h2>
+      <ul class="tools" id="recent-list"></ul>
+    </section>
+
+    <div id="tool-groups">
+      <section class="group" id="cat-编码转换" data-cat="编码转换"><h2>编码转换<span class="count">4</span></h2><ul class="tools"><li class="tool-item" data-key="json 格式化 格式化、压缩、键名排序、校验定位与路径提取 json json format pretty minify validate 格式化 美化 压缩 校验 路径 提取 排序"><a href="/json" data-slug="json"><span class="ico">{}</span><span class="t-body"><b>JSON 格式化</b><span class="desc">格式化、压缩、键名排序、校验定位与路径提取</span></span><span class="arrow">→</span></a></li><li class="tool-item" data-key="base64 编解码 文本与文件转 base64，支持 url-safe 与自动补 padding base64 base64 encode decode dataurl 编码 解码 转码 图片转base64 data url"><a href="/base64" data-slug="base64"><span class="ico">64</span><span class="t-body"><b>Base64 编解码</b><span class="desc">文本与文件转 Base64，支持 URL-safe 与自动补 padding</span></span><span class="arrow">→</span></a></li><li class="tool-item" data-key="url 编解码 url 编码解码与结构拆解（协议/域名/路径/查询参数） url url uri encode decode query 编码 解码 转义 链接 参数 解析"><a href="/url" data-slug="url"><span class="ico">%</span><span class="t-body"><b>URL 编解码</b><span class="desc">URL 编码解码与结构拆解（协议/域名/路径/查询参数）</span></span><span class="arrow">→</span></a></li><li class="tool-item" data-key="进制转换 2–36 进制大整数互转，文本与 hex/bin 字节互转 radix radix hex binary base36 convert 进制 十六进制 二进制 八进制 转换 字节"><a href="/radix" data-slug="radix"><span class="ico">0x</span><span class="t-body"><b>进制转换</b><span class="desc">2–36 进制大整数互转，文本与 HEX/BIN 字节互转</span></span><span class="arrow">→</span></a></li></ul></section>
+      <section class="group" id="cat-文本处理" data-cat="文本处理"><h2>文本处理<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="文本对比 按行 diff（lcs），标出新增、删除与相同行 diff diff compare text patch 对比 比较 差异 改动 diff"><a href="/diff" data-slug="diff"><span class="ico">±</span><span class="t-body"><b>文本对比</b><span class="desc">按行 diff（LCS），标出新增、删除与相同行</span></span><span class="arrow">→</span></a></li></ul></section>
+      <section class="group" id="cat-时间日期" data-cat="时间日期"><h2>时间日期<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="时间戳转换 unix 时间戳与日期互转，含本地时间、utc、iso 与相对时间 timestamp timestamp unix date time iso 时间戳 日期 转换 utc iso 秒 毫秒"><a href="/timestamp" data-slug="timestamp"><span class="ico">⏱</span><span class="t-body"><b>时间戳转换</b><span class="desc">Unix 时间戳与日期互转，含本地时间、UTC、ISO 与相对时间</span></span><span class="arrow">→</span></a></li></ul></section>
+      <section class="group" id="cat-加密哈希" data-cat="加密哈希"><h2>加密哈希<span class="count">2</span></h2><ul class="tools"><li class="tool-item" data-key="哈希计算 md5 / sha-1 / sha-256 / sha-384 / sha-512，支持文本与文件 hash hash md5 sha1 sha256 checksum 哈希 摘要 校验 文件校验 签名"><a href="/hash" data-slug="hash"><span class="ico">#</span><span class="t-body"><b>哈希计算</b><span class="desc">MD5 / SHA-1 / SHA-256 / SHA-384 / SHA-512，支持文本与文件</span></span><span class="arrow">→</span></a></li><li class="tool-item" data-key="jwt 解析 解码 header/payload、查看过期时间、校验 hmac 签名 jwt jwt token jose hmac auth 令牌 解码 过期 签名 鉴权 登录"><a href="/jwt" data-slug="jwt"><span class="ico">🔑</span><span class="t-body"><b>JWT 解析</b><span class="desc">解码 Header/Payload、查看过期时间、校验 HMAC 签名</span></span><span class="arrow">→</span></a></li></ul></section>
+      <section class="group" id="cat-生成器" data-cat="生成器"><h2>生成器<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="随机生成 uuid v4、随机字符串、强密码、随机整数（csprng 安全随机） random uuid random password nanoid token 随机 密码 令牌 密钥 uuid 字符串"><a href="/random" data-slug="random"><span class="ico">🎲</span><span class="t-body"><b>随机生成</b><span class="desc">UUID v4、随机字符串、强密码、随机整数（CSPRNG 安全随机）</span></span><span class="arrow">→</span></a></li></ul></section>
+      <section class="group" id="cat-开发辅助" data-cat="开发辅助"><h2>开发辅助<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="正则测试 实时匹配高亮、分组捕获与替换预览 regex regex regexp match replace 正则 匹配 替换 捕获 分组 表达式"><a href="/regex" data-slug="regex"><span class="ico">.*</span><span class="t-body"><b>正则测试</b><span class="desc">实时匹配高亮、分组捕获与替换预览</span></span><span class="arrow">→</span></a></li></ul></section>
+    </div>
+
+    <p class="empty" id="empty" hidden>没有匹配的工具，换个关键词试试。</p>
+  </main>
+
+  <footer class="footer">
+    <span>tool.xbta.cc · 构建于 2026-10-23 13:47:54 +08</span>
+    <a href="https://github.com/rentianyu/tool" target="_blank" rel="noreferrer noopener">GitHub</a>
+  </footer>
+</body>
+</html>

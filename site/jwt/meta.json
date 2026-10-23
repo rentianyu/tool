@@ -1,0 +1,12 @@
+{
+  "name": "JWT 解析",
+  "summary": "解码 Header/Payload、查看过期时间、校验 HMAC 签名",
+  "category": "加密哈希",
+  "icon": "🔑",
+  "order": 20,
+  "tags": ["jwt", "token", "jose", "hmac", "auth"],
+  "keywords": ["令牌", "解码", "过期", "签名", "鉴权", "登录"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

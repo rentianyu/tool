@@ -1,0 +1,12 @@
+{
+  "name": "URL 编解码",
+  "summary": "URL 编码解码与结构拆解（协议/域名/路径/查询参数）",
+  "category": "编码转换",
+  "icon": "%",
+  "order": 30,
+  "tags": ["url", "uri", "encode", "decode", "query"],
+  "keywords": ["编码", "解码", "转义", "链接", "参数", "解析"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

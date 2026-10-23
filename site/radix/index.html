@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>进制转换 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/radix/app.js"></script>
+</head>
+<body class="page-tool" data-tool="radix">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">数值进制转换（支持大整数）</span>
+        <span class="row">
+          <button class="btn btn-sm" id="swap" type="button">交换进制 ⇄</button>
+          <button class="btn btn-sm" id="copyNum" type="button">复制结果</button>
+        </span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="lbl">输入数值</label>
+          <input type="text" id="numVal" placeholder="如 255 或 ff 或 11111111">
+          <div class="row" style="margin-top:8px">
+            <span class="mut small">源进制</span>
+            <select id="fromBase" style="width:auto">
+              <option value="2">2</option><option value="8">8</option>
+              <option value="10" selected>10</option><option value="16">16</option>
+              <option value="32">32</option><option value="36">36</option>
+            </select>
+            <input type="number" id="fromBaseCustom" min="2" max="36" placeholder="自定义" style="width:96px">
+          </div>
+        </div>
+        <div>
+          <label class="lbl">转换结果</label>
+          <pre class="out" id="numOut" style="min-height:38px"></pre>
+          <div class="row" style="margin-top:8px">
+            <span class="mut small">目标进制</span>
+            <select id="toBase" style="width:auto">
+              <option value="2">2</option><option value="8">8</option>
+              <option value="10">10</option><option value="16" selected>16</option>
+              <option value="32">32</option><option value="36">36</option>
+            </select>
+            <input type="number" id="toBaseCustom" min="2" max="36" placeholder="自定义" style="width:96px">
+            <label class="row small mut"><input type="checkbox" id="upper"> 大写</label>
+          </div>
+        </div>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">文本 ↔ 十六进制 / 二进制（UTF-8）</span>
+        <span class="row">
+          <label class="row small mut"><input type="checkbox" id="sep" checked> 字节间加空格</label>
+          <button class="btn btn-sm" id="copyText" type="button">复制结果</button>
+        </span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="lbl">文本</label>
+          <textarea id="text" class="mono-sm" spellcheck="false" placeholder="输入文本（或粘贴 hex 后点右侧解码）"></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn btn-primary" id="toHex" type="button">→ HEX</button>
+            <button class="btn" id="toBin" type="button">→ BIN</button>
+            <button class="btn" id="hexToText" type="button">HEX → 文本</button>
+            <button class="btn" id="binToText" type="button">BIN → 文本</button>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">结果</label>
+          <pre class="out" id="textOut" style="min-height:150px"></pre>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

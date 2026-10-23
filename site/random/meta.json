@@ -1,0 +1,12 @@
+{
+  "name": "随机生成",
+  "summary": "UUID v4、随机字符串、强密码、随机整数（CSPRNG 安全随机）",
+  "category": "生成器",
+  "icon": "🎲",
+  "order": 10,
+  "tags": ["uuid", "random", "password", "nanoid", "token"],
+  "keywords": ["随机", "密码", "令牌", "密钥", "uuid", "字符串"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tool",
+  "main": "src/index.js",
+  "compatibility_date": "2026-05-03",
+  "assets": {
+    "directory": "./site",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "tool.xbta.cc/*", "zone_name": "xbta.cc" }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>随机生成 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/random/app.js"></script>
+</head>
+<body class="page-tool" data-tool="random">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">UUID v4</span>
+        <span class="row">
+          <input type="number" id="uuidCount" value="5" min="1" max="200" style="width:76px" title="数量">
+          <button class="btn btn-sm btn-primary" id="uuidBtn" type="button">生成</button>
+          <button class="btn btn-sm" id="uuidCopy" type="button">复制</button>
+        </span>
+      </div>
+      <pre class="out" id="uuidOut" style="min-height:56px;max-height:220px"></pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">随机字符串</span></div>
+      <div class="row">
+        <select id="charset" style="width:auto">
+          <option value="alnum">字母 + 数字</option>
+          <option value="lower">小写字母</option>
+          <option value="upper">大写字母</option>
+          <option value="digit">纯数字</option>
+          <option value="hex">十六进制</option>
+          <option value="base58">Base58（无易混字符）</option>
+          <option value="custom">自定义字符集</option>
+        </select>
+        <input type="text" id="custom" placeholder="自定义字符集" style="width:200px" hidden>
+        <input type="number" id="len" value="16" min="1" max="512" style="width:76px" title="长度">
+        <input type="number" id="strCount" value="5" min="1" max="200" style="width:76px" title="数量">
+        <button class="btn btn-sm btn-primary" id="strBtn" type="button">生成</button>
+        <button class="btn btn-sm" id="strCopy" type="button">复制</button>
+      </div>
+      <pre class="out" id="strOut" style="margin-top:10px;min-height:56px;max-height:220px"></pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">密码生成</span></div>
+      <div class="row">
+        <label class="row small"><input type="checkbox" id="pUpper" checked> 大写</label>
+        <label class="row small"><input type="checkbox" id="pLower" checked> 小写</label>
+        <label class="row small"><input type="checkbox" id="pDigit" checked> 数字</label>
+        <label class="row small"><input type="checkbox" id="pSymbol" checked> 符号</label>
+        <label class="row small"><input type="checkbox" id="pNoAmb" checked> 排除易混（0O1lI|）</label>
+        <input type="number" id="pLen" value="16" min="4" max="128" style="width:76px" title="长度">
+        <button class="btn btn-sm btn-primary" id="pBtn" type="button">生成</button>
+        <button class="btn btn-sm" id="pCopy" type="button">复制</button>
+      </div>
+      <pre class="out" id="pOut" style="margin-top:10px;min-height:44px"></pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">随机整数</span></div>
+      <div class="row">
+        <input type="number" id="rMin" value="1" style="width:110px" title="最小值">
+        <span class="mut">~</span>
+        <input type="number" id="rMax" value="100" style="width:110px" title="最大值">
+        <input type="number" id="rCount" value="10" min="1" max="200" style="width:76px" title="数量">
+        <button class="btn btn-sm btn-primary" id="rBtn" type="button">生成</button>
+        <button class="btn btn-sm" id="rCopy" type="button">复制</button>
+      </div>
+      <pre class="out" id="rOut" style="margin-top:10px;min-height:44px"></pre>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "JSON 格式化",
+  "summary": "格式化、压缩、键名排序、校验定位与路径提取",
+  "category": "编码转换",
+  "icon": "{}",
+  "order": 10,
+  "tags": ["json", "format", "pretty", "minify", "validate"],
+  "keywords": ["格式化", "美化", "压缩", "校验", "路径", "提取", "排序"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

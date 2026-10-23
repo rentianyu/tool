@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>文本对比 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/diff/app.js"></script>
+  <style>
+    .diff-view { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; max-height: 560px; overflow: auto;
+      border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-soft); }
+    .diff-row { display: grid; grid-template-columns: 48px 18px 1fr; gap: 0; white-space: pre-wrap; word-break: break-all; }
+    .diff-row > span { padding: 1px 0; }
+    .diff-no { color: var(--fg-mute); text-align: right; padding-right: 8px !important; user-select: none; font-size: 11px; }
+    .diff-sign { text-align: center; user-select: none; }
+    .diff-text { padding-left: 6px !important; }
+    .diff-add { background: rgba(53, 201, 138, 0.1); }
+    .diff-add .diff-sign { color: var(--ok); }
+    .diff-del { background: rgba(240, 97, 109, 0.1); }
+    .diff-del .diff-sign { color: var(--err); }
+    .diff-same { color: var(--fg-dim); }
+    .stat-add { color: var(--ok); }
+    .stat-del { color: var(--err); }
+  </style>
+</head>
+<body class="page-tool" data-tool="diff">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">文本对比（按行）</span>
+        <span class="row">
+          <button class="btn btn-sm" id="sample" type="button">示例</button>
+          <button class="btn btn-sm" id="swap" type="button">交换 ⇄</button>
+          <button class="btn btn-sm btn-ghost" id="clear" type="button">清空</button>
+        </span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="lbl">原始文本（A）</label>
+          <textarea id="left" spellcheck="false" placeholder="粘贴原始内容"></textarea>
+        </div>
+        <div>
+          <label class="lbl">修改后（B）</label>
+          <textarea id="right" spellcheck="false" placeholder="粘贴修改后内容"></textarea>
+        </div>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">对比结果</span>
+        <span class="row">
+          <span class="chip stat-add" id="addChip">+0</span>
+          <span class="chip stat-del" id="delChip">-0</span>
+          <span class="chip" id="sameChip">相同 0</span>
+        </span>
+      </div>
+      <div class="diff-view" id="view"></div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "tool-xbta",
+  "private": true,
+  "version": "1.0.0",
+  "description": "xbta 工具箱 · Cloudflare Worker + Static Assets",
+  "scripts": {
+    "build": "python3 build.py",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.86.0"
+  }
+}

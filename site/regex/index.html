@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>正则测试 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/regex/app.js"></script>
+</head>
+<body class="page-tool" data-tool="regex">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">正则表达式</span>
+        <span class="mut small" id="status"></span>
+      </div>
+      <div class="row">
+        <span class="mono mut">/</span>
+        <input type="text" id="pattern" class="mono" placeholder="如 (\w+)@(\w+)\.com" style="flex:1;min-width:220px">
+        <span class="mono mut">/</span>
+        <input type="text" id="flags" class="mono" value="g" style="width:70px" title="flags">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <label class="row small mut"><input type="checkbox" id="f-g" checked> g 全局</label>
+        <label class="row small mut"><input type="checkbox" id="f-i"> i 忽略大小写</label>
+        <label class="row small mut"><input type="checkbox" id="f-m"> m 多行</label>
+        <label class="row small mut"><input type="checkbox" id="f-s"> s . 匹配换行</label>
+        <label class="row small mut"><input type="checkbox" id="f-u"> u Unicode</label>
+        <label class="row small mut"><input type="checkbox" id="f-y"> y 粘性</label>
+        <span class="spacer"></span>
+        <span class="row small mut">替换为</span>
+        <input type="text" id="replacement" class="mono" placeholder="$1 / $& / $<name>" style="width:200px">
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">测试文本</span></div>
+        <textarea id="text" class="mono-sm" spellcheck="false" placeholder="粘贴要匹配的文本"></textarea>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">匹配高亮</span>
+          <button class="btn btn-sm" id="copyReplace" type="button">复制替换结果</button>
+        </div>
+        <pre class="out" id="highlight" style="min-height:170px;max-height:340px"></pre>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">匹配详情</span></div>
+      <div id="matches" class="dim small">输入正则与文本后显示。</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">替换预览</span></div>
+      <pre class="out" id="replaceOut" style="min-height:60px;max-height:280px"></pre>
+    </div>
+  </main>
+</body>
+</html>

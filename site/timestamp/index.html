@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>时间戳转换 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/timestamp/app.js"></script>
+</head>
+<body class="page-tool" data-tool="timestamp">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">当前时间（每秒刷新）</span>
+        <span class="mut small" id="tzname"></span>
+      </div>
+      <div class="row" style="gap:18px;align-items:baseline">
+        <div>
+          <div class="mut small">秒</div>
+          <div class="mono" id="nowSec" style="font-size:20px;font-weight:600">—</div>
+        </div>
+        <div>
+          <div class="mut small">毫秒</div>
+          <div class="mono" id="nowMs" style="font-size:20px;font-weight:600">—</div>
+        </div>
+        <div>
+          <div class="mut small">本地时间</div>
+          <div class="mono" id="nowLocal" style="font-size:14px">—</div>
+        </div>
+        <span class="spacer"></span>
+        <button class="btn btn-sm" id="copyNow" type="button">复制秒级</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">转换</span>
+        <span class="row">
+          <button class="btn btn-sm" id="setNow" type="button">现在</button>
+          <button class="btn btn-sm" id="setToday" type="button">今天 0 点</button>
+          <button class="btn btn-sm" id="setPlus" type="button">+1 小时</button>
+        </span>
+      </div>
+      <input type="text" id="input" placeholder="时间戳（10 位秒 / 13 位毫秒）或日期，如 2026-10-23 13:30:00">
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">结果</span>
+        <button class="btn btn-sm" id="copyAll" type="button">复制全部</button>
+      </div>
+      <table class="kv" id="tbl"></table>
+    </div>
+  </main>
+</body>
+</html>

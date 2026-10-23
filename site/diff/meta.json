@@ -1,0 +1,12 @@
+{
+  "name": "文本对比",
+  "summary": "按行 diff（LCS），标出新增、删除与相同行",
+  "category": "文本处理",
+  "icon": "±",
+  "order": 10,
+  "tags": ["diff", "compare", "text", "patch"],
+  "keywords": ["对比", "比较", "差异", "改动", "diff"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

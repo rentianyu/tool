@@ -1,0 +1,12 @@
+{
+  "name": "Base64 编解码",
+  "summary": "文本与文件转 Base64，支持 URL-safe 与自动补 padding",
+  "category": "编码转换",
+  "icon": "64",
+  "order": 20,
+  "tags": ["base64", "encode", "decode", "dataurl"],
+  "keywords": ["编码", "解码", "转码", "图片转base64", "data url"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

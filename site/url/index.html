@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>URL 编解码 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/url/app.js"></script>
+</head>
+<body class="page-tool" data-tool="url">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">输入</span></div>
+      <textarea id="input" class="mono-sm" spellcheck="false" placeholder="文本或 URL，例如 https://example.com/a?x=1&y=中文"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-primary" id="auto" type="button">自动识别并转换</button>
+        <button class="btn" id="encComp" type="button">encodeURIComponent</button>
+        <button class="btn" id="decComp" type="button">decodeURIComponent</button>
+        <button class="btn" id="encUri" type="button">encodeURI</button>
+        <button class="btn" id="decUri" type="button">decodeURI</button>
+        <span class="spacer"></span>
+        <button class="btn btn-ghost" id="clear" type="button">清空</button>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">结果</span>
+        <span class="row">
+          <button class="btn btn-sm" id="copy" type="button">复制</button>
+          <button class="btn btn-sm" id="swap" type="button">作输入 ↑</button>
+        </span>
+      </div>
+      <pre class="out" id="output" style="min-height:80px"></pre>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">URL 结构解析</span>
+        <button class="btn btn-sm" id="parse" type="button">解析输入框的 URL</button>
+      </div>
+      <div id="parsed" class="dim small">粘贴一个完整 URL 后点「解析」。</div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "正则测试",
+  "summary": "实时匹配高亮、分组捕获与替换预览",
+  "category": "开发辅助",
+  "icon": ".*",
+  "order": 10,
+  "tags": ["regex", "regexp", "match", "replace"],
+  "keywords": ["正则", "匹配", "替换", "捕获", "分组", "表达式"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

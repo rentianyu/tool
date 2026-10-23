@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Base64 编解码 · 工具箱</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/base64/app.js"></script>
+</head>
+<body class="page-tool" data-tool="base64">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">输入</span>
+        <span class="row">
+          <label class="row small mut"><input type="checkbox" id="urlsafe"> URL-safe（-_ 替代 +/，去 padding）</label>
+        </span>
+      </div>
+      <textarea id="input" spellcheck="false" placeholder="输入文本，或选择文件自动转 Base64"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-primary" id="encode" type="button">编码 →</button>
+        <button class="btn" id="decode" type="button">← 解码</button>
+        <label class="btn" for="file">选择文件</label>
+        <input type="file" id="file" hidden>
+        <span class="spacer"></span>
+        <button class="btn btn-ghost" id="clear" type="button">清空</button>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">结果</span>
+        <span class="row">
+          <span class="mut small mono" id="stats"></span>
+          <button class="btn btn-sm" id="copy" type="button">复制</button>
+          <button class="btn btn-sm" id="swap" type="button">结果作输入 ↑</button>
+        </span>
+      </div>
+      <pre class="out" id="output"></pre>
+    </div>
+  </main>
+</body>
+</html>

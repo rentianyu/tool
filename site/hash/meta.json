@@ -1,0 +1,12 @@
+{
+  "name": "哈希计算",
+  "summary": "MD5 / SHA-1 / SHA-256 / SHA-384 / SHA-512，支持文本与文件",
+  "category": "加密哈希",
+  "icon": "#",
+  "order": 10,
+  "tags": ["hash", "md5", "sha1", "sha256", "checksum"],
+  "keywords": ["哈希", "摘要", "校验", "文件校验", "签名"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

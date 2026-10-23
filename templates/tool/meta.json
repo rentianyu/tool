@@ -1,0 +1,12 @@
+{
+  "name": "{{NAME}}",
+  "summary": "一句话说明这个工具做什么",
+  "category": "开发辅助",
+  "icon": "•",
+  "order": 100,
+  "tags": ["example"],
+  "keywords": ["示例", "关键词"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "进制转换",
+  "summary": "2–36 进制大整数互转，文本与 HEX/BIN 字节互转",
+  "category": "编码转换",
+  "icon": "0x",
+  "order": 40,
+  "tags": ["radix", "hex", "binary", "base36", "convert"],
+  "keywords": ["进制", "十六进制", "二进制", "八进制", "转换", "字节"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-10-23"
+}
