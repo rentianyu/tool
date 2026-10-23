@@ -36,6 +36,9 @@ jobs:
           for f in $(find site src -name '*.js'); do cp "$f" "/tmp/$(echo "$f" | tr '/.' '__').mjs"; node --check "/tmp/$(echo "$f" | tr '/.' '__').mjs"; done
           echo "语法检查通过"
 
+      - name: 核心逻辑单测
+        run: node tests/core.test.mjs
+
       - name: 部署到 Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
