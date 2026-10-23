@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tool",
+  "account_id": "52588331033c130bb578765ddaef2fc8",
   "main": "src/index.js",
   "compatibility_date": "2026-05-03",
   "assets": {
