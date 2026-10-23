@@ -225,6 +225,10 @@ export default {
         if (current.hostname === "tool.xbta.cc" && current.pathname.startsWith("/api/url-editor")) {
           return fail("不能通过本接口请求本接口自身", "recursive");
         }
+        // Worker 请求自己的域名会再次进入本 Worker，形成子请求并被边缘判为异常（522）
+        if (current.origin === new URL(request.url).origin) {
+          return fail("同源地址无需代理，前端会直接请求", "same_origin", 400);
+        }
         const check = await assertPublicTarget(current);
         dnsChecked = dnsChecked && check.checked;
 

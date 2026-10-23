@@ -218,20 +218,49 @@ function renderResponse(data) {
   kindChip.className = "chip json";
 }
 
+async function requestSameOrigin(url) {
+  // 同源请求不需要代理：浏览器直连即可（也避免 Worker 请求自己形成循环）
+  const started = performance.now();
+  const res = await fetch(url, { method: "GET", cache: "no-store" });
+  const text = await res.text();
+  const headers = {};
+  res.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
+  return {
+    ok: true,
+    finalUrl: res.url || url,
+    status: res.status,
+    statusText: res.statusText,
+    elapsedMs: Math.round(performance.now() - started),
+    bytes: new TextEncoder().encode(text).length,
+    truncated: false,
+    contentType: res.headers.get("content-type") || "",
+    headers,
+    redirects: [],
+    body: text,
+  };
+}
+
+async function requestViaProxy(url) {
+  const res = await fetch("/api/url-editor/request", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+  return res.json();
+}
+
 $("send").addEventListener("click", async () => {
   if (!currentUrl) return toast("还没有生成链接");
   const btn = $("send");
   btn.disabled = true;
   btn.textContent = "请求中…";
-  message($("msg"), "正在经服务器代理请求…", "warn");
+  const sameOrigin = new URL(currentUrl).origin === location.origin;
+  message($("msg"), sameOrigin ? "正在请求同源地址…" : "正在经服务器代理请求…", "warn");
 
   try {
-    const res = await fetch("/api/url-editor/request", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ url: currentUrl }),
-    });
-    const data = await res.json();
+    const data = sameOrigin ? await requestSameOrigin(currentUrl) : await requestViaProxy(currentUrl);
     if (!data.ok) {
       $("respPanel").hidden = false;
       const status = $("respStatus");
