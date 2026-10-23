@@ -299,6 +299,78 @@ ok("diff: 大输入保护", () => {
   assert.strictEqual(r.ok, false);
 });
 
+/* ---------------- URL 编辑器 ---------------- */
+const UE = await import(`${BASE}/url-editor/core.js`);
+
+ok("urlEditor: 解析基本结构", () => {
+  const r = UE.parseUrl("https://example.com/a/b?id=1&name=%E4%B8%AD%E6%96%87#top");
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.state.protocol, "https");
+  assert.strictEqual(r.state.host, "example.com");
+  assert.strictEqual(r.state.port, "");
+  assert.strictEqual(r.state.path, "/a/b");
+  assert.strictEqual(r.state.hash, "top");
+  assert.strictEqual(r.state.params.length, 2);
+  assert.strictEqual(r.state.params[1].value, "中文");
+  assert.strictEqual(r.state.params[1].enabled, true);
+});
+ok("urlEditor: 自动补协议", () => {
+  const r = UE.parseUrl("example.com/x?y=1");
+  assert.strictEqual(r.state.host, "example.com");
+  assert.strictEqual(r.hadProtocol, false);
+});
+ok("urlEditor: 端口与 http", () => {
+  const r = UE.parseUrl("http://127.0.0.1:8080/api");
+  assert.strictEqual(r.state.protocol, "http");
+  assert.strictEqual(r.state.port, "8080");
+});
+ok("urlEditor: 非法输入", () => {
+  assert.strictEqual(UE.parseUrl("").ok, false);
+  assert.strictEqual(UE.parseUrl("ftp://a.com/x").ok, false);
+  assert.strictEqual(UE.parseUrl("ht tp://a.com").ok, false);
+});
+ok("urlEditor: 构建往返一致", () => {
+  const raw = "https://example.com/a/b?id=1&name=%E4%B8%AD%E6%96%87#top";
+  const built = UE.buildUrl(UE.parseUrl(raw).state);
+  assert.strictEqual(built, raw);
+});
+ok("urlEditor: 取消勾选不输出", () => {
+  const r = UE.parseUrl("https://a.com/x?a=1&b=2");
+  r.state.params[0].enabled = false;
+  assert.strictEqual(UE.buildUrl(r.state), "https://a.com/x?b=2");
+});
+ok("urlEditor: 中文路径自动编码", () => {
+  const built = UE.buildUrl({ protocol: "https", host: "a.com", port: "", path: "/中文/文件", hash: "", params: [] });
+  assert.strictEqual(built, "https://a.com/%E4%B8%AD%E6%96%87/%E6%96%87%E4%BB%B6");
+});
+ok("urlEditor: 空值参数保留", () => {
+  const built = UE.buildUrl({ protocol: "https", host: "a.com", port: "", path: "/", hash: "", params: [{ key: "flag", value: "", enabled: true }] });
+  assert.strictEqual(built, "https://a.com/?flag=");
+});
+ok("urlEditor: 参数值特殊字符编码", () => {
+  const built = UE.buildUrl({ protocol: "https", host: "a.com", port: "", path: "/", hash: "", params: [{ key: "q", value: "a b&c=d/中", enabled: true }] });
+  assert.strictEqual(built, "https://a.com/?q=a%20b%26c%3Dd%2F%E4%B8%AD");
+});
+ok("urlEditor: 缺域名报错", () => assert.throws(() => UE.buildUrl({ host: "" })));
+ok("urlEditor: 端口非数字报错", () => assert.throws(() => UE.buildUrl({ host: "a.com", port: "80a" })));
+ok("urlEditor: 路径补前导斜杠", () => {
+  const built = UE.buildUrl({ protocol: "https", host: "a.com", port: "", path: "api/x", hash: "", params: [] });
+  assert.strictEqual(built, "https://a.com/api/x");
+});
+ok("urlEditor: 路径拆解", () => {
+  const s = UE.splitPath("/api/v1/list.json");
+  assert.strictEqual(s.dir, "/api/v1/");
+  assert.strictEqual(s.last, "list.json");
+  assert.strictEqual(s.depth, 3);
+  const root = UE.splitPath("/");
+  assert.strictEqual(root.dir, "/");
+  assert.strictEqual(root.last, "");
+});
+ok("urlEditor: extractUrl", () => {
+  assert.strictEqual(UE.extractUrl("看这个 https://a.com/x?y=1 。"), "https://a.com/x?y=1");
+  assert.strictEqual(UE.extractUrl('"https://b.com/z"'), "https://b.com/z");
+});
+
 /* ---------------- 结果 ---------------- */
 console.log(`\n通过 ${pass} 项，失败 ${fails.length} 项`);
 if (fails.length) {

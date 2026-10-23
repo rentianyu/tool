@@ -19,17 +19,17 @@
         <input id="q" type="search" placeholder="搜索工具 / 快捷键 / 用途…" autocomplete="off" spellcheck="false">
         <kbd>/</kbd>
       </div>
-      <button class="icon-btn" id="theme" type="button" title="切换主题" aria-label="切换主题">◐</button>
+      <button class="icon-btn" id="theme" data-theme-toggle type="button" title="切换到夜间模式" aria-label="切换到夜间模式">☾</button>
     </div>
   </header>
 
   <nav class="catbar">
-    <div class="catbar-inner"><a href="#cat-编码转换">编码转换<span>4</span></a><a href="#cat-文本处理">文本处理<span>1</span></a><a href="#cat-时间日期">时间日期<span>1</span></a><a href="#cat-加密哈希">加密哈希<span>2</span></a><a href="#cat-生成器">生成器<span>1</span></a><a href="#cat-开发辅助">开发辅助<span>1</span></a></div>
+    <div class="catbar-inner"><a href="#cat-编码转换">编码转换<span>4</span></a><a href="#cat-文本处理">文本处理<span>1</span></a><a href="#cat-时间日期">时间日期<span>1</span></a><a href="#cat-加密哈希">加密哈希<span>2</span></a><a href="#cat-生成器">生成器<span>1</span></a><a href="#cat-网络">网络<span>1</span></a><a href="#cat-开发辅助">开发辅助<span>1</span></a></div>
   </nav>
 
   <main class="wrap">
     <div class="nav-meta">
-      <span>共 <b>10</b> 个工具 · <b>6</b> 个分类</span>
+      <span>共 <b>11</b> 个工具 · <b>7</b> 个分类</span>
       <span class="dim">全部在浏览器本地运行，不上传数据</span>
     </div>
 
@@ -44,6 +44,7 @@
       <section class="group" id="cat-时间日期" data-cat="时间日期"><h2>时间日期<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="时间戳转换 unix 时间戳与日期互转，含本地时间、utc、iso 与相对时间 timestamp timestamp unix date time iso 时间戳 日期 转换 utc iso 秒 毫秒"><a href="/timestamp" data-slug="timestamp"><span class="ico">⏱</span><span class="t-body"><b>时间戳转换</b><span class="desc">Unix 时间戳与日期互转，含本地时间、UTC、ISO 与相对时间</span></span><span class="arrow">→</span></a></li></ul></section>
       <section class="group" id="cat-加密哈希" data-cat="加密哈希"><h2>加密哈希<span class="count">2</span></h2><ul class="tools"><li class="tool-item" data-key="哈希计算 md5 / sha-1 / sha-256 / sha-384 / sha-512，支持文本与文件 hash hash md5 sha1 sha256 checksum 哈希 摘要 校验 文件校验 签名"><a href="/hash" data-slug="hash"><span class="ico">#</span><span class="t-body"><b>哈希计算</b><span class="desc">MD5 / SHA-1 / SHA-256 / SHA-384 / SHA-512，支持文本与文件</span></span><span class="arrow">→</span></a></li><li class="tool-item" data-key="jwt 解析 解码 header/payload、查看过期时间、校验 hmac 签名 jwt jwt token jose hmac auth 令牌 解码 过期 签名 鉴权 登录"><a href="/jwt" data-slug="jwt"><span class="ico">🔑</span><span class="t-body"><b>JWT 解析</b><span class="desc">解码 Header/Payload、查看过期时间、校验 HMAC 签名</span></span><span class="arrow">→</span></a></li></ul></section>
       <section class="group" id="cat-生成器" data-cat="生成器"><h2>生成器<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="随机生成 uuid v4、随机字符串、强密码、随机整数（csprng 安全随机） random uuid random password nanoid token 随机 密码 令牌 密钥 uuid 字符串"><a href="/random" data-slug="random"><span class="ico">🎲</span><span class="t-body"><b>随机生成</b><span class="desc">UUID v4、随机字符串、强密码、随机整数（CSPRNG 安全随机）</span></span><span class="arrow">→</span></a></li></ul></section>
+      <section class="group" id="cat-网络" data-cat="网络"><h2>网络<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="url 编辑器 拆解链接、勾选编辑参数，一键复制 / 跳转 / 发起请求看响应 url-editor url query params request http debug 链接 参数 拆解 编辑 请求 调试 query 接口"><a href="/url-editor" data-slug="url-editor"><span class="ico">🔗</span><span class="t-body"><b>URL 编辑器<i class="badge">API</i></b><span class="desc">拆解链接、勾选编辑参数，一键复制 / 跳转 / 发起请求看响应</span></span><span class="arrow">→</span></a></li></ul></section>
       <section class="group" id="cat-开发辅助" data-cat="开发辅助"><h2>开发辅助<span class="count">1</span></h2><ul class="tools"><li class="tool-item" data-key="正则测试 实时匹配高亮、分组捕获与替换预览 regex regex regexp match replace 正则 匹配 替换 捕获 分组 表达式"><a href="/regex" data-slug="regex"><span class="ico">.*</span><span class="t-body"><b>正则测试</b><span class="desc">实时匹配高亮、分组捕获与替换预览</span></span><span class="arrow">→</span></a></li></ul></section>
     </div>
 
@@ -51,7 +52,7 @@
   </main>
 
   <footer class="footer">
-    <span>tool.xbta.cc · 构建于 2026-10-23 14:02:23 +08</span>
+    <span>tool.xbta.cc · v2.0.0 · 构建于 2026-10-23 15:55:54 +08</span>
     <a href="https://github.com/rentianyu/tool" target="_blank" rel="noreferrer noopener">GitHub</a>
   </footer>
 </body>

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-10-23 14:02:23 +08",
-  "count": 10,
+  "generated": "2026-10-23 15:55:54 +08",
+  "count": 11,
   "tools": [
     {
       "slug": "json",
@@ -230,6 +230,35 @@
         "字符串"
       ],
       "backend": false,
+      "status": "stable",
+      "since": "2026-10-23"
+    },
+    {
+      "slug": "url-editor",
+      "url": "/url-editor",
+      "name": "URL 编辑器",
+      "summary": "拆解链接、勾选编辑参数，一键复制 / 跳转 / 发起请求看响应",
+      "category": "网络",
+      "icon": "🔗",
+      "tags": [
+        "url",
+        "query",
+        "params",
+        "request",
+        "http",
+        "debug"
+      ],
+      "keywords": [
+        "链接",
+        "参数",
+        "拆解",
+        "编辑",
+        "请求",
+        "调试",
+        "query",
+        "接口"
+      ],
+      "backend": true,
       "status": "stable",
       "since": "2026-10-23"
     },

@@ -43,6 +43,16 @@ CATEGORY_ORDER = [
 
 REQUIRED = ("name", "summary", "category")
 
+
+def read_version():
+    try:
+        return json.loads((ROOT / "package.json").read_text(encoding="utf-8")).get("version", "0.0.0")
+    except Exception:
+        return "0.0.0"
+
+
+SITE_VERSION = read_version()
+
 errors = []
 warnings = []
 
@@ -154,6 +164,7 @@ def render(tools, build_time):
         .replace("{{CATEGORY_NAV}}", cat_nav)
         .replace("{{TOOL_COUNT}}", str(len(tools)))
         .replace("{{CATEGORY_COUNT}}", str(len(cat_order)))
+        .replace("{{SITE_VERSION}}", SITE_VERSION)
         .replace("{{BUILD_TIME}}", build_time)
     )
     return html
@@ -227,6 +238,7 @@ def main():
     (SITE / "index.html").write_text(render(tools, build_time), encoding="utf-8")
     (ROOT / "src" / "version.js").write_text(
         "// 由 build.py 自动生成，请勿手改\n"
+        f'export const SITE_VERSION = "{SITE_VERSION}";\n'
         f'export const BUILD_TIME = "{build_time}";\n'
         f'export const BUILD_STAMP = "{version_stamp}";\n'
         f"export const TOOL_COUNT = {len(tools)};\n",

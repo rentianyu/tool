@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>URL 编辑器 · 工具箱</title>
+  <meta name="description" content="拆解 URL、勾选编辑查询参数，一键复制、跳转或发起请求查看响应。">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/url-editor/app.js"></script>
+  <style>
+    .params { table-layout: fixed; }
+    .params th { width: auto; font-family: var(--sans); font-size: 11.5px; }
+    .params td { padding: 3px 6px; vertical-align: middle; }
+    .params td:first-child { text-align: center; }
+    .params input[type="text"] { height: 28px; padding: 3px 8px; font-size: 12px; }
+    .params tr.disabled input[type="text"] { opacity: 0.45; text-decoration: line-through; }
+    .params input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--accent); cursor: pointer; }
+    #result { word-break: break-all; }
+    .chip.json { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+    details > summary { cursor: pointer; }
+  </style>
+</head>
+<body class="page-tool" data-tool="url-editor">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">粘贴 URL</span>
+        <span class="mut small" id="parseHint"></span>
+      </div>
+      <div class="row">
+        <input type="text" id="raw" placeholder="https://example.com/api/list?page=1&size=20 （可省略 https://）" style="flex:1;min-width:240px">
+        <button class="btn btn-primary" id="parse" type="button">解析</button>
+        <button class="btn btn-ghost" id="clear" type="button">清空</button>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">拆解（可直接编辑）</span>
+        <span class="mut small" id="pathInfo"></span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="lbl">协议</label>
+          <select id="protocol">
+            <option value="https">https</option>
+            <option value="http">http</option>
+          </select>
+          <label class="lbl" style="margin-top:8px">域名（host）</label>
+          <input type="text" id="host" class="mono" placeholder="example.com">
+        </div>
+        <div>
+          <label class="lbl">端口</label>
+          <input type="text" id="port" class="mono" placeholder="留空表示默认（443/80）">
+          <label class="lbl" style="margin-top:8px">锚点（# 之后）</label>
+          <input type="text" id="hash" class="mono" placeholder="留空表示没有">
+        </div>
+      </div>
+      <label class="lbl" style="margin-top:10px">路径（path / 路由）</label>
+      <input type="text" id="path" class="mono" placeholder="/api/list">
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">查询参数 <span class="mut small" id="paramCount"></span></span>
+        <span class="row">
+          <button class="btn btn-sm" id="addParam" type="button">+ 添加参数</button>
+        </span>
+      </div>
+      <table class="params kv">
+        <thead>
+          <tr><th style="width:44px">启用</th><th>参数名</th><th>参数值</th><th style="width:56px"></th></tr>
+        </thead>
+        <tbody id="paramBody"></tbody>
+      </table>
+      <p class="mut small" id="paramEmpty" hidden>没有查询参数，点「+ 添加参数」。</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">生成结果</span>
+        <span class="row">
+          <button class="btn btn-sm" id="copyLink" type="button">复制链接</button>
+          <button class="btn btn-sm" id="openLink" type="button">新标签打开</button>
+          <button class="btn btn-sm btn-primary" id="send" type="button">请求</button>
+        </span>
+      </div>
+      <pre class="out" id="result" style="min-height:48px"></pre>
+    </div>
+
+    <div class="panel" id="respPanel" hidden>
+      <div class="panel-head">
+        <span class="panel-title">请求情况</span>
+        <span class="row">
+          <span class="chip" id="respStatus">—</span>
+          <span class="chip" id="respTime">—</span>
+          <span class="chip" id="respSize">—</span>
+          <span class="chip" id="respKind" hidden>JSON</span>
+        </span>
+      </div>
+      <div class="small mut" id="respMeta" style="word-break:break-all"></div>
+      <details style="margin-top:8px">
+        <summary class="small mut">响应头（<span id="hdrCount">0</span>）</summary>
+        <pre class="out" id="respHeaders" style="margin-top:6px;max-height:200px"></pre>
+      </details>
+      <div class="panel-title" style="margin:12px 0 6px">响应体</div>
+      <pre class="out" id="respBody" style="min-height:120px;max-height:520px"></pre>
+    </div>
+  </main>
+</body>
+</html>

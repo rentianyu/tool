@@ -9,10 +9,10 @@
  * params = { slug, action, url, query }
  *   action 为 /api/<slug>/ 之后的第一段，可为空字符串；query 为 URLSearchParams。
  */
-import { BUILD_TIME, TOOL_COUNT } from "../version.js";
+import { BUILD_TIME, SITE_VERSION, TOOL_COUNT } from "../version.js";
 
 const MODULES = {
-  // 示例：ip: () => import("./ip.js"),
+  "url-editor": () => import("./url-editor.js"),
 };
 
 const JSON_HEADERS = {

@@ -8,23 +8,38 @@
 const THEME_KEY = "tool.theme";
 const RECENT_KEY = "tool.recent";
 
-/* ---------------- 主题 ---------------- */
-export function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
-}
+/* ---------------- 主题（默认白天） ---------------- */
 export function currentTheme() {
-  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
-applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+
+function paintThemeButtons() {
+  const dark = currentTheme() === "dark";
+  document.querySelectorAll("[data-theme-toggle], #theme").forEach((btn) => {
+    btn.textContent = dark ? "☀" : "☾";
+    btn.title = dark ? "切换到白天模式" : "切换到夜间模式";
+    btn.setAttribute("aria-label", btn.title);
+  });
+}
+
+export function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme === "dark" ? "dark" : "light";
+  paintThemeButtons();
+}
+
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
 
 function bindThemeButtons(root = document) {
-  root.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
+  root.querySelectorAll("[data-theme-toggle], #theme").forEach((btn) => {
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = "1";
     btn.addEventListener("click", () => {
-      const next = currentTheme() === "light" ? "dark" : "light";
+      const next = currentTheme() === "dark" ? "light" : "dark";
       applyTheme(next);
       localStorage.setItem(THEME_KEY, next);
     });
   });
+  paintThemeButtons();
 }
 bindThemeButtons();
 

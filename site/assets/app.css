@@ -4,6 +4,28 @@
    ============================================================ */
 
 :root {
+  /* 白天模式（默认） */
+  --bg: #f6f8fb;
+  --bg-soft: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #f1f4f9;
+  --line: #e2e8f0;
+  --line-soft: #edf1f6;
+  --fg: #18202b;
+  --fg-dim: #56616f;
+  --fg-mute: #8a95a3;
+  --accent: #1f6feb;
+  --accent-soft: rgba(31, 111, 235, 0.1);
+  --ok: #13875b;
+  --warn: #a86400;
+  --err: #cf2f36;
+  --radius: 8px;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
   --bg: #0b0e13;
   --bg-soft: #10141b;
   --panel: #141a22;
@@ -18,25 +40,7 @@
   --ok: #35c98a;
   --warn: #f0a44b;
   --err: #f0616d;
-  --radius: 8px;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   color-scheme: dark;
-}
-
-html[data-theme="light"] {
-  --bg: #f5f7fa;
-  --bg-soft: #ffffff;
-  --panel: #ffffff;
-  --panel-2: #f2f5f9;
-  --line: #e1e6ed;
-  --line-soft: #edf1f6;
-  --fg: #1b2430;
-  --fg-dim: #5b6775;
-  --fg-mute: #8b96a4;
-  --accent: #1f6feb;
-  --accent-soft: rgba(31, 111, 235, 0.09);
-  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -234,7 +238,7 @@ kbd {
   border: 1px solid transparent;
 }
 .tool-item a:hover {
-  background: var(--panel);
+  background: var(--panel-2);
   border-color: var(--line);
   text-decoration: none;
 }
