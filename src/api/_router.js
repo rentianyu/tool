@@ -44,6 +44,7 @@ export async function routeApi(request, env, ctx) {
     return json({
       ok: true,
       service: "tool.xbta.cc",
+      version: SITE_VERSION,
       build: BUILD_TIME,
       tools: TOOL_COUNT,
       colo: request.cf ? request.cf.colo : null,
