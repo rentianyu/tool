@@ -28,7 +28,7 @@ site/                   ← assets 目录（部署产物 = 源）
   404.html
   assets/
     app.css             设计系统（暗色默认 + 亮色切换）
-    app.js              公共外壳：顶栏/面包屑/搜索/最近使用；导出 toast/copy 等
+    app.js              公共外壳：顶栏/面包屑/搜索/我的收藏；导出 toast/copy 等
     lib/dom.js          可选 DOM 小工具
   <slug>/
     index.html          工具页（只写工具本体）
@@ -57,7 +57,7 @@ npx wrangler dev                  # http://127.0.0.1:8787
 3. 写 `index.html`（只写本体）+ `core.js`（纯逻辑）+ `app.js`（UI）
 4. `python3 build.py` → commit & push，GitHub Actions 自动部署
 
-导航页、分类、搜索、面包屑、"最近使用"全部自动派生，**不需要改任何公共文件**。
+导航页、分类、搜索、面包屑、收藏星标全部自动派生，**不需要改任何公共文件**。
 
 ### meta.json 字段
 

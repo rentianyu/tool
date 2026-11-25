@@ -1,12 +1,11 @@
 /**
  * 公共外壳 + 通用工具函数
- * - 导航页：工具搜索、分类跳转、最近使用
+ * - 导航页：工具搜索、分类跳转、我的收藏
  * - 工具页：注入顶栏 / 面包屑 / 标题（工具页 HTML 只写工具本体）
  * - 其他模块可 import { toast, copy, downloadText, escapeHtml } from "/assets/app.js"
  */
 
 const THEME_KEY = "tool.theme";
-const RECENT_KEY = "tool.recent";
 
 /* ---------------- 主题（默认白天） ---------------- */
 export function currentTheme() {
@@ -120,52 +119,120 @@ export function debounce(fn, wait = 200) {
   };
 }
 
-/* ---------------- 最近使用 ---------------- */
-function loadRecent() {
+/* ---------------- 我的收藏（localStorage，按 slug 存，最近收藏在前） ---------------- */
+const FAV_KEY = "tool.favs";
+
+export function loadFavs() {
   try {
-    const list = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
-    return Array.isArray(list) ? list : [];
+    const list = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+    return Array.isArray(list) ? list.filter((slug) => typeof slug === "string" && slug) : [];
   } catch {
     return [];
   }
 }
 
-function recordRecent(slug, meta) {
-  const list = loadRecent().filter((item) => item.slug !== slug);
-  list.unshift({
-    slug,
-    name: meta.name || slug,
-    summary: meta.summary || "",
-    icon: meta.icon || "•",
-    category: meta.category || "",
-  });
+function saveFavs(list) {
   try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 8)));
+    localStorage.setItem(FAV_KEY, JSON.stringify(list));
   } catch {
-    /* 隐私模式下忽略 */
+    /* 隐私模式 / 容量超限：静默忽略 */
   }
 }
 
-function toolItemHtml(tool) {
-  const key = `${tool.name} ${tool.summary || ""} ${tool.slug}`.toLowerCase();
-  return `<li class="tool-item" data-key="${escapeHtml(key)}">
-    <a href="/${escapeHtml(tool.slug)}" data-slug="${escapeHtml(tool.slug)}">
-      <span class="ico">${escapeHtml(tool.icon || "•")}</span>
-      <span class="t-body"><b>${escapeHtml(tool.name)}</b><span class="desc">${escapeHtml(tool.summary || "")}</span></span>
-      <span class="arrow">→</span>
-    </a></li>`;
+export function isFav(slug) {
+  return loadFavs().includes(slug);
 }
 
-function renderRecent() {
-  const group = document.getElementById("recent-group");
-  const list = document.getElementById("recent-list");
-  const count = document.getElementById("recent-count");
-  if (!group || !list) return;
-  const recent = loadRecent();
-  if (!recent.length) return;
-  list.innerHTML = recent.map(toolItemHtml).join("");
-  if (count) count.textContent = recent.length;
-  group.hidden = false;
+/** 切换收藏，返回切换后的状态（true = 已收藏） */
+export function toggleFav(slug) {
+  if (!slug) return false;
+  const list = loadFavs();
+  const on = !list.includes(slug);
+  saveFavs(on ? [slug, ...list.filter((item) => item !== slug)] : list.filter((item) => item !== slug));
+  paintFavButtons();
+  renderFavs();
+  return on;
+}
+
+function paintFavButtons() {
+  const favs = loadFavs();
+  $$("[data-fav]").forEach((btn) => {
+    const on = favs.includes(btn.dataset.fav);
+    btn.classList.toggle("on", on);
+    btn.textContent = btn.dataset.label ? (on ? "★ 已收藏" : "☆ 收藏") : on ? "★" : "☆";
+    btn.title = on ? "取消收藏" : "收藏到「我的收藏」";
+    btn.setAttribute("aria-label", btn.title);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
+function bindFavButtons(root = document) {
+  root.querySelectorAll("[data-fav]").forEach((btn) => {
+    if (btn._favBound) return;
+    btn._favBound = true;
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const on = toggleFav(btn.dataset.fav);
+      toast(on ? "已收藏" : "已取消收藏");
+    });
+  });
+}
+
+/** 给导航页每个工具条目挂星标按钮（不动 build 产物结构） */
+function decorateFavButtons() {
+  $$("#tool-groups .tool-item").forEach((item) => {
+    if (item.querySelector("[data-fav]")) return;
+    const link = item.querySelector("a[data-slug]");
+    if (!link) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "fav-btn";
+    btn.dataset.fav = link.dataset.slug;
+    btn.textContent = "☆";
+    item.appendChild(btn);
+  });
+  bindFavButtons();
+  paintFavButtons();
+}
+
+function renderFavs() {
+  const list = document.getElementById("fav-list");
+  const count = document.getElementById("fav-count");
+  const emptyEl = document.getElementById("fav-empty");
+  if (!list) return;
+
+  const favs = loadFavs();
+  if (count) count.textContent = favs.length ? String(favs.length) : "";
+
+  if (!favs.length) {
+    list.textContent = "";
+    list.hidden = true;
+    if (emptyEl) emptyEl.hidden = false;
+    return;
+  }
+
+  const bySlug = new Map();
+  $$("#tool-groups .tool-item").forEach((item) => {
+    const link = item.querySelector("a[data-slug]");
+    if (link) bySlug.set(link.dataset.slug, item);
+  });
+
+  const nodes = [];
+  favs.forEach((slug) => {
+    const src = bySlug.get(slug);
+    if (!src) return; // 工具已下线：静默跳过，不动用户数据
+    const node = src.cloneNode(true);
+    node.hidden = false;
+    nodes.push(node);
+  });
+
+  list.textContent = "";
+  nodes.forEach((node) => list.appendChild(node));
+  list.hidden = nodes.length === 0;
+  if (emptyEl) emptyEl.hidden = nodes.length !== 0;
+  bindFavButtons(list);
+  paintFavButtons();
 }
 
 /* ---------------- 导航页搜索 ---------------- */
@@ -173,8 +240,8 @@ function bindSearch() {
   const input = document.getElementById("q");
   if (!input) return;
   const empty = document.getElementById("empty");
-  const recentGroup = document.getElementById("recent-group");
-  const groups = $$(".group").filter((g) => g.id !== "recent-group");
+  const favGroup = document.getElementById("fav-group");
+  const groups = $$(".group").filter((g) => g.id !== "fav-group");
 
   const apply = () => {
     const q = input.value.trim().toLowerCase();
@@ -189,7 +256,7 @@ function bindSearch() {
       group.hidden = hit === 0;
       visible += hit;
     });
-    if (recentGroup) recentGroup.hidden = !!q || !loadRecent().length;
+    if (favGroup) favGroup.hidden = !!q;
     if (empty) empty.hidden = visible !== 0;
   };
 
@@ -253,17 +320,20 @@ async function mountToolShell() {
     const head = document.createElement("div");
     head.className = "tool-head";
     const category = meta.category || "";
-    head.innerHTML = `<div class="crumb">
-        <a href="/">工具箱</a>
-        ${category ? `<span class="sep">/</span><a href="/#cat-${escapeHtml(category)}">${escapeHtml(category)}</a>` : ""}
-        <span class="sep">/</span><span>${escapeHtml(meta.name || slug)}</span>
+    head.innerHTML = `<div class="tool-head-top">
+        <div class="crumb">
+          <a href="/">工具箱</a>
+          ${category ? `<span class="sep">/</span><a href="/#cat-${escapeHtml(category)}">${escapeHtml(category)}</a>` : ""}
+          <span class="sep">/</span><span>${escapeHtml(meta.name || slug)}</span>
+        </div>
+        <button class="fav-btn fav-btn-inline" type="button" data-fav="${escapeHtml(slug)}" data-label="1" title="收藏到「我的收藏」">☆ 收藏</button>
       </div>
       <h1>${escapeHtml(meta.name || slug)}</h1>
       ${meta.summary ? `<p>${escapeHtml(meta.summary)}</p>` : ""}`;
     main.prepend(head);
+    bindFavButtons(head);
+    paintFavButtons();
   }
-
-  recordRecent(slug, meta);
 }
 
 /* ---------------- 启动 ---------------- */
@@ -275,7 +345,8 @@ if (document.readyState === "loading") {
 
 function boot() {
   if (document.body.classList.contains("page-nav")) {
-    renderRecent();
+    decorateFavButtons();
+    renderFavs();
     bindSearch();
   }
   mountToolShell();
