@@ -9,7 +9,7 @@
 ## 为什么是 Worker + Static Assets
 
 - 静态资源命中时**不执行 Worker 脚本**，不消耗 Workers 请求额度；
-- `html_handling: "drop-trailing-slash"` 让 `/json` 直接 200 返回 `site/json/index.html`，**没有 307 跳转**；
+- `html_handling: "drop-trailing-slash"` 让 `/codec` 直接 200 返回 `site/codec/index.html`，**没有 307 跳转**；
 - 需要后端时，同域名下写 `/api/<slug>/<action>` 即可，不用另起服务。
 
 ## 目录结构
@@ -89,7 +89,7 @@ npx wrangler dev                  # http://127.0.0.1:8787
 `core.js` 不依赖 DOM，可以直接用 Node 跑：
 
 ```js
-const M = await import('/abs/path/site/json/core.js');
+const M = await import('/abs/path/site/codec/core/json.js');
 console.assert(M.parseJson('{"a":1}').ok === true);
 ```
 
@@ -133,8 +133,8 @@ const MODULES = { ip: () => import('./ip.js') };
 
 ```bash
 curl -sI  https://tool.xbta.cc/            # 200 + 安全头
-curl -sI  https://tool.xbta.cc/json        # 200（不是 307）
-curl -sI  https://tool.xbta.cc/json/       # 307 → /json
+curl -sI  https://tool.xbta.cc/codec       # 200（不是 307）
+curl -sI  https://tool.xbta.cc/codec/      # 307 → /codec
 curl -s   https://tool.xbta.cc/api/health  # tools 数量与 build 时间
 curl -sI  https://tool.xbta.cc/nope        # 404 + 自定义 404 页
 ```

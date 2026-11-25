@@ -1,0 +1,12 @@
+{
+  "name": "编码转换",
+  "summary": "JSON 格式化、Base64 编解码、URL 编解码、进制转换，下拉切换",
+  "category": "编码转换",
+  "icon": "⇄",
+  "order": 10,
+  "tags": ["json", "base64", "url", "radix", "hex", "encode", "decode", "format"],
+  "keywords": ["编码", "解码", "格式化", "美化", "压缩", "校验", "转码", "base64", "百分号", "进制", "十六进制", "二进制", "字节"],
+  "backend": false,
+  "status": "stable",
+  "since": "2026-11-25"
+}

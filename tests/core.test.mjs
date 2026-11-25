@@ -23,7 +23,7 @@ async function okAsync(name, fn) {
 }
 
 /* ---------------- JSON ---------------- */
-const J = await import(`${BASE}/json/core.js`);
+const J = await import(`${BASE}/codec/core/json.js`);
 
 ok("json: 解析合法", () => assert.strictEqual(J.parseJson('{"a":1}').ok, true));
 ok("json: 空输入报错", () => assert.strictEqual(J.parseJson("  ").ok, false));
@@ -56,7 +56,7 @@ ok("json: 统计深度", () => {
 });
 
 /* ---------------- Base64 ---------------- */
-const B = await import(`${BASE}/base64/core.js`);
+const B = await import(`${BASE}/codec/core/base64.js`);
 
 ok("base64: 往返中文", () => {
   const enc = B.encodeText("凯哥 tool 站");
@@ -80,7 +80,7 @@ ok("base64: 文件 mime 猜测", () => {
 });
 
 /* ---------------- URL ---------------- */
-const U = await import(`${BASE}/url/core.js`);
+const U = await import(`${BASE}/codec/core/url.js`);
 
 ok("url: encode component", () => assert.strictEqual(U.encodeComponent("a b/c"), "a%20b%2Fc"));
 ok("url: decode component", () => assert.strictEqual(U.decodeComponent("a%20b%2Fc"), "a b/c"));
@@ -178,7 +178,7 @@ ok("random: 整数范围", () => {
 });
 
 /* ---------------- Radix ---------------- */
-const X = await import(`${BASE}/radix/core.js`);
+const X = await import(`${BASE}/codec/core/radix.js`);
 
 ok("radix: 10→16", () => assert.strictEqual(X.convert("255", 10, 16).text, "ff"));
 ok("radix: 16→10", () => assert.strictEqual(X.convert("ff", 16, 10).text, "255"));

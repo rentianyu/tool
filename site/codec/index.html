@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>编码转换 · 工具箱</title>
+  <meta name="description" content="JSON 格式化、Base64 编解码、URL 编解码、进制转换，一个页面下拉切换，纯浏览器本地处理。">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/codec/app.js"></script>
+  <style>
+    .codec-switch select { width: 100%; max-width: 320px; font-size: 14px; padding: 8px 10px; }
+    @media (max-width: 560px) {
+      .codec-switch select { max-width: none; }
+    }
+  </style>
+</head>
+<body class="page-tool" data-tool="codec">
+  <main class="wrap">
+    <div class="panel codec-switch">
+      <div class="panel-head"><span class="panel-title">功能</span></div>
+      <div class="row">
+        <select id="mode" aria-label="选择编码转换功能">
+          <option value="json">JSON 格式化</option>
+          <option value="base64">Base64 编解码</option>
+          <option value="url">URL 编解码</option>
+          <option value="radix">进制转换</option>
+        </select>
+      </div>
+    </div>
+    <div id="panels"></div>
+  </main>
+</body>
+</html>

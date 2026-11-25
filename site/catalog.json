@@ -1,112 +1,42 @@
 {
-  "generated": "2026-11-25 20:42:28 +08",
-  "count": 12,
+  "generated": "2026-11-25 22:24:46 +08",
+  "count": 9,
   "tools": [
     {
-      "slug": "json",
-      "url": "/json",
-      "name": "JSON 格式化",
-      "summary": "格式化、压缩、键名排序、校验定位与路径提取",
+      "slug": "codec",
+      "url": "/codec",
+      "name": "编码转换",
+      "summary": "JSON 格式化、Base64 编解码、URL 编解码、进制转换，下拉切换",
       "category": "编码转换",
-      "icon": "{}",
+      "icon": "⇄",
       "tags": [
         "json",
-        "format",
-        "pretty",
-        "minify",
-        "validate"
+        "base64",
+        "url",
+        "radix",
+        "hex",
+        "encode",
+        "decode",
+        "format"
       ],
       "keywords": [
+        "编码",
+        "解码",
         "格式化",
         "美化",
         "压缩",
         "校验",
-        "路径",
-        "提取",
-        "排序"
-      ],
-      "backend": false,
-      "status": "stable",
-      "since": "2026-10-23",
-      "external": ""
-    },
-    {
-      "slug": "base64",
-      "url": "/base64",
-      "name": "Base64 编解码",
-      "summary": "文本与文件转 Base64，支持 URL-safe 与自动补 padding",
-      "category": "编码转换",
-      "icon": "64",
-      "tags": [
-        "base64",
-        "encode",
-        "decode",
-        "dataurl"
-      ],
-      "keywords": [
-        "编码",
-        "解码",
         "转码",
-        "图片转base64",
-        "data url"
-      ],
-      "backend": false,
-      "status": "stable",
-      "since": "2026-10-23",
-      "external": ""
-    },
-    {
-      "slug": "url",
-      "url": "/url",
-      "name": "URL 编解码",
-      "summary": "URL 编码解码与结构拆解（协议/域名/路径/查询参数）",
-      "category": "编码转换",
-      "icon": "%",
-      "tags": [
-        "url",
-        "uri",
-        "encode",
-        "decode",
-        "query"
-      ],
-      "keywords": [
-        "编码",
-        "解码",
-        "转义",
-        "链接",
-        "参数",
-        "解析"
-      ],
-      "backend": false,
-      "status": "stable",
-      "since": "2026-10-23",
-      "external": ""
-    },
-    {
-      "slug": "radix",
-      "url": "/radix",
-      "name": "进制转换",
-      "summary": "2–36 进制大整数互转，文本与 HEX/BIN 字节互转",
-      "category": "编码转换",
-      "icon": "0x",
-      "tags": [
-        "radix",
-        "hex",
-        "binary",
-        "base36",
-        "convert"
-      ],
-      "keywords": [
+        "base64",
+        "百分号",
         "进制",
         "十六进制",
         "二进制",
-        "八进制",
-        "转换",
         "字节"
       ],
       "backend": false,
       "status": "stable",
-      "since": "2026-10-23",
+      "since": "2026-11-25",
       "external": ""
     },
     {

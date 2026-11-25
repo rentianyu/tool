@@ -159,8 +159,7 @@ def render(tools, build_time):
                 f'<li class="tool-item" data-key="{escape(key)}">'
                 f'<a href="/{t["slug"]}" data-slug="{t["slug"]}">'
                 f'<span class="ico">{escape(icon)}</span>'
-                f'<span class="t-body"><b>{escape(meta.get("name", t["slug"]))}{badge}{beta}{ext_badge}</b>'
-                f'<span class="desc">{escape(meta.get("summary", ""))}</span></span>'
+                f'<span class="t-body"><b>{escape(meta.get("name", t["slug"]))}{badge}{beta}{ext_badge}</b></span>'
                 f'<span class="arrow">{arrow}</span></a></li>'
             )
         blocks.append(
