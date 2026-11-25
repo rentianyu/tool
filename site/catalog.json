@@ -1,6 +1,6 @@
 {
-  "generated": "2026-11-25 22:24:46 +08",
-  "count": 9,
+  "generated": "2026-11-26 01:37:03 +08",
+  "count": 10,
   "tools": [
     {
       "slug": "codec",
@@ -62,6 +62,41 @@
       "backend": false,
       "status": "stable",
       "since": "2026-10-23",
+      "external": ""
+    },
+    {
+      "slug": "vcf",
+      "url": "/vcf",
+      "name": "表格转 vCard",
+      "summary": "表格粘贴或 CSV/TSV 文件 → 手机通讯录可导入的 .vcf",
+      "category": "文本处理",
+      "icon": "☎",
+      "tags": [
+        "vcf",
+        "vcard",
+        "contact",
+        "contacts",
+        "csv",
+        "tsv",
+        "excel"
+      ],
+      "keywords": [
+        "表格",
+        "通讯录",
+        "联系人",
+        "手机",
+        "电话",
+        "导入",
+        "名片",
+        "批量",
+        "vcf",
+        "vcard",
+        "csv",
+        "excel"
+      ],
+      "backend": false,
+      "status": "stable",
+      "since": "2026-11-26",
       "external": ""
     },
     {

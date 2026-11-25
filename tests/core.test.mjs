@@ -472,6 +472,129 @@ ok("urlEditor: extractUrl 支持任意 scheme", () => {
   assert.strictEqual(UE.extractUrl("发我：mailto:a@b.com"), "mailto:a@b.com");
 });
 
+/* ---------------- vCard（表格转通讯录） ---------------- */
+const V = await import(`${BASE}/vcf/core.js`);
+
+const TSV = "姓名\t手机\t公司\n张三\t138 0013 8000\t示例科技\n李四\t+86 139-0013-9000\t客户单位";
+
+ok("vcf: 检测制表符", () => assert.strictEqual(V.detectDelimiter(TSV), "\t"));
+ok("vcf: 检测逗号", () => assert.strictEqual(V.detectDelimiter("a,b,c\n1,2,3"), ","));
+ok("vcf: 解析 TSV", () => {
+  const rows = V.parseTable(TSV);
+  assert.strictEqual(rows.length, 3);
+  assert.deepStrictEqual(rows[0], ["姓名", "手机", "公司"]);
+  assert.strictEqual(rows[1][1], "138 0013 8000");
+});
+ok("vcf: 引号包裹与逗号字段", () => {
+  const rows = V.parseTable('姓名,备注\n张三,"北京, 朝阳"\n李四,"说""好"""');
+  assert.strictEqual(rows[1][1], "北京, 朝阳");
+  assert.strictEqual(rows[2][1], '说"好"');
+});
+ok("vcf: cleanCell 去 BOM 与零宽", () => {
+  assert.strictEqual(V.cleanCell("\uFEFF 张三\u200B "), "张三");
+});
+ok("vcf: 表头识别（中文）", () => {
+  const map = V.guessFieldMap(["姓名", "手机号", "公司", "职位", "邮箱", "其它"]);
+  assert.deepStrictEqual(map, ["name", "mobile", "org", "title", "email", "ignore"]);
+});
+ok("vcf: 表头识别（英文与带括号）", () => {
+  const map = V.guessFieldMap(["Full Name", "Mobile Phone", "Company"]);
+  assert.strictEqual(map[0], "name");
+  assert.strictEqual(map[1], "mobile");
+  assert.strictEqual(map[2], "org");
+  assert.strictEqual(V.guessFieldMap(["联系电话（必填）"])[0], "mobile");
+});
+ok("vcf: 手机/电话两列分开映射", () => {
+  const map = V.guessFieldMap(["姓名", "手机", "电话"]);
+  assert.deepStrictEqual(map, ["name", "mobile", "phone"]);
+  // 只有「电话」一列时优先当手机
+  assert.strictEqual(V.guessFieldMap(["姓名", "电话"])[1], "mobile");
+});
+ok("vcf: 无姓名列时第 0 列兜底", () => {
+  const map = V.guessFieldMap(["称呼", "电话"]);
+  assert.strictEqual(map[0], "name");
+});
+ok("vcf: 手机号清洗", () => {
+  assert.strictEqual(V.normalizePhone("138 0013 8000"), "13800138000");
+  assert.strictEqual(V.normalizePhone("+86 139-0013-9000"), "+8613900139000");
+  assert.strictEqual(V.normalizePhone("１３８００１３８０００"), "13800138000");
+  assert.strictEqual(V.normalizePhone("010-12345678 转 802"), "01012345678");
+  assert.strictEqual(V.normalizePhone("123"), "");
+  assert.strictEqual(V.normalizePhone(""), "");
+});
+ok("vcf: 生成联系人（跳过无名行 + 去重）", () => {
+  const rows = [
+    ["张三", "138 0013 8000", "示例科技"],
+    ["", "", "孤立公司"],
+    ["李四", "+86 139-0013-9000", "客户单位"],
+    ["张三重复", "13800138000", "示例科技"],
+  ];
+  const map = ["name", "mobile", "org"];
+  const r = V.buildContacts(rows, map, { dedup: true });
+  assert.strictEqual(r.contacts.length, 2);
+  assert.strictEqual(r.skipped, 1);
+  assert.strictEqual(r.duplicates, 1);
+  assert.strictEqual(r.contacts[0].mobile, "13800138000");
+});
+ok("vcf: 无名但有手机时用号码当姓名", () => {
+  const r = V.buildContacts([["", "13900139000"]], ["name", "mobile"], { dedup: false });
+  assert.strictEqual(r.contacts[0].name, "13900139000");
+});
+ok("vcf: 文本转义", () => {
+  assert.strictEqual(V.escapeVCardText("a;b,c\\d\ne"), "a\\;b\\,c\\\\d\\ne");
+});
+ok("vcf: 折行不切断多字节且不超 75 字节", () => {
+  const src = `NOTE:${"中文测试".repeat(20)}`;
+  const folded = V.foldLine(src);
+  const lines = folded.split("\r\n");
+  assert.ok(lines.length > 1, "应发生折行");
+  lines.forEach((line) => {
+    const bytes = new TextEncoder().encode(line).length;
+    assert.ok(bytes <= 75, `行超长：${bytes}`);
+  });
+  const restored = lines.map((line, index) => (index === 0 ? line : line.slice(1))).join("");
+  assert.strictEqual(restored, src);
+});
+ok("vcf: 单张名片字段", () => {
+  const card = V.buildVCard(
+    {
+      name: "张三",
+      mobile: "13800138000",
+      phone: "01012345678",
+      org: "示例科技",
+      dept: "研发部",
+      title: "项目经理",
+      email: "z@example.com",
+      address: "北京朝阳",
+      wechat: "zs_wx",
+      remark: "常用",
+      url: "https://example.com",
+    },
+    { nameSplit: true },
+  );
+  assert.ok(card.startsWith("BEGIN:VCARD\r\nVERSION:3.0\r\n"));
+  assert.ok(card.includes("FN:张三"));
+  assert.ok(card.includes("N:张;三;;;"));
+  assert.ok(card.includes("ORG:示例科技;研发部"));
+  assert.ok(card.includes("TITLE:项目经理"));
+  assert.ok(card.includes("TEL;TYPE=CELL:13800138000"));
+  assert.ok(card.includes("TEL;TYPE=VOICE:01012345678"));
+  assert.ok(card.includes("EMAIL;TYPE=INTERNET:z@example.com"));
+  assert.ok(card.includes("ADR;TYPE=WORK:;;北京朝阳;;;;"));
+  assert.ok(card.includes("NOTE:微信：zs_wx；常用"));
+  assert.ok(card.endsWith("END:VCARD"));
+});
+ok("vcf: 不拆分姓名", () => {
+  const card = V.buildVCard({ name: "欧阳修" }, { nameSplit: false });
+  assert.ok(card.includes("N:欧阳修;;;;"));
+});
+ok("vcf: 多张名片 CRLF 结尾", () => {
+  const text = V.buildVCards([{ name: "张三" }, { name: "李四" }]);
+  assert.strictEqual((text.match(/BEGIN:VCARD/g) || []).length, 2);
+  assert.ok(text.endsWith("END:VCARD\r\n"));
+  assert.ok(!/[^\r]\n/.test(text), "换行必须是 CRLF");
+});
+
 /* ---------------- 结果 ---------------- */
 console.log(`\n通过 ${pass} 项，失败 ${fails.length} 项`);
 if (fails.length) {

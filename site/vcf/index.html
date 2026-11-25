@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>表格转 vCard · 工具箱</title>
+  <meta name="description" content="把表格（Excel/WPS 粘贴、CSV/TSV 文件）转成手机通讯录可导入的 .vcf 文件，纯浏览器本地处理。">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+  <script type="module" src="/vcf/app.js"></script>
+  <style>
+    .vcf-opts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 12.5px; color: var(--fg-dim); }
+    .vcf-opts label { display: inline-flex; align-items: center; gap: 5px; }
+    #input { white-space: pre; overflow-x: auto; min-height: 150px; }
+    .map-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; }
+    .map-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .map-head { display: flex; align-items: baseline; gap: 6px; font-size: 12px; color: var(--fg-dim); min-width: 0; }
+    .map-head b { font-weight: 600; color: var(--fg); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .map-head em { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--fg-mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .map-item select { width: 100%; font-size: 12.5px; padding: 5px 8px; }
+    .preview-wrap { overflow-x: auto; border: 1px solid var(--line-soft); border-radius: 6px; -webkit-overflow-scrolling: touch; }
+    table.preview { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    table.preview th, table.preview td { text-align: left; padding: 5px 9px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+    table.preview th { color: var(--fg-dim); font-weight: 500; background: var(--panel-2); }
+    table.preview td.cut { max-width: 190px; overflow: hidden; text-overflow: ellipsis; }
+    table.preview tr:last-child td { border-bottom: 0; }
+    .vcf-stat { font-size: 12.5px; color: var(--fg-dim); }
+    .vcf-stat b { color: var(--fg); font-weight: 600; }
+    .vcf-stat .warn { color: var(--warn); }
+    @media (max-width: 760px) {
+      .map-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 480px) {
+      .map-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="page-tool" data-tool="vcf">
+  <main class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">表格数据</span>
+        <span class="row">
+          <label class="btn btn-sm" for="file">选择文件</label>
+          <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden>
+          <button class="btn btn-sm btn-ghost" id="sample" type="button">填入示例</button>
+        </span>
+      </div>
+      <textarea id="input" spellcheck="false" placeholder="从 Excel / WPS 直接复制整块表格粘贴到这里（首行是表头），或点「选择文件」导入 .csv / .tsv / .txt"></textarea>
+      <div class="row" style="margin-top:10px">
+        <div class="vcf-opts">
+          <label><input type="checkbox" id="hasHeader" checked> 首行是表头</label>
+          <label><input type="checkbox" id="dedup" checked> 同号码去重</label>
+          <label>姓名拆分
+            <select id="nameSplit" style="width:auto;padding:4px 6px;font-size:12px">
+              <option value="first" selected>首字为姓</option>
+              <option value="none">不拆分</option>
+            </select>
+          </label>
+        </div>
+        <span class="spacer"></span>
+        <button class="btn btn-ghost btn-sm" id="clear" type="button">清空</button>
+      </div>
+      <div class="msg" id="msg" style="margin-top:8px"></div>
+    </div>
+
+    <div class="panel" id="map-panel" hidden>
+      <div class="panel-head">
+        <span class="panel-title">列对应</span>
+        <span class="mut small" id="map-hint">按表头自动识别，可下拉修正</span>
+      </div>
+      <div class="map-grid" id="map-grid"></div>
+    </div>
+
+    <div class="panel" id="out-panel" hidden>
+      <div class="panel-head">
+        <span class="panel-title">预览与导出</span>
+        <span class="row">
+          <button class="btn btn-sm" id="copy" type="button">复制 vCard</button>
+          <button class="btn btn-sm btn-primary" id="download" type="button">下载 .vcf</button>
+        </span>
+      </div>
+      <div class="vcf-stat" id="stat"></div>
+      <div class="preview-wrap" id="preview-wrap" style="margin-top:8px">
+        <table class="preview" id="preview"></table>
+      </div>
+      <p class="mut small" id="hint" style="margin:8px 0 0"></p>
+    </div>
+  </main>
+</body>
+</html>
