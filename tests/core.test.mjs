@@ -595,6 +595,64 @@ ok("vcf: 多张名片 CRLF 结尾", () => {
   assert.ok(!/[^\r]\n/.test(text), "换行必须是 CRLF");
 });
 
+/* ---------------- 浏览器书签 ---------------- */
+ok("bookmark: 网址规范化", () => {
+  assert.strictEqual(V.normalizeUrl("https://a.com/x"), "https://a.com/x");
+  assert.strictEqual(V.normalizeUrl("http://a.com"), "http://a.com");
+  assert.strictEqual(V.normalizeUrl("baidu.com"), "https://baidu.com");
+  assert.strictEqual(V.normalizeUrl("www.example.com/path?q=1"), "https://www.example.com/path?q=1");
+  assert.strictEqual(V.normalizeUrl("//cdn.a.com/x.js"), "https://cdn.a.com/x.js");
+  assert.strictEqual(V.normalizeUrl("192.168.1.1:8080/admin"), "http://192.168.1.1:8080/admin");
+  assert.strictEqual(V.normalizeUrl("mailto:a@b.com"), "mailto:a@b.com");
+  assert.strictEqual(V.normalizeUrl("随便写的"), "");
+  assert.strictEqual(V.normalizeUrl(""), "");
+});
+ok("bookmark: 表头识别", () => {
+  const map = V.guessFieldMap(["名称", "网址", "分类", "标签", "备注"], V.BOOKMARK_FIELDS);
+  assert.deepStrictEqual(map, ["title", "url", "folder", "tags", "desc"]);
+  assert.strictEqual(V.guessFieldMap(["书签名", "链接"], V.BOOKMARK_FIELDS)[1], "url");
+});
+ok("bookmark: 生成条目（跳过无效网址 + 去重）", () => {
+  const rows = [
+    ["百度", "baidu.com", "搜索"],
+    ["无效", "不是网址", "其它"],
+    ["百度重复", "https://baidu.com", "搜索"],
+    ["", "example.com", ""],
+  ];
+  const r = V.buildBookmarks(rows, ["title", "url", "folder"], { dedup: true });
+  assert.strictEqual(r.items.length, 2);
+  assert.strictEqual(r.skipped, 1);
+  assert.strictEqual(r.duplicates, 1);
+  assert.strictEqual(r.items[0].url, "https://baidu.com");
+  assert.strictEqual(r.items[1].title, "https://example.com", "无名称时用网址代替");
+});
+ok("bookmark: HTML 结构", () => {
+  const html = V.buildBookmarksHtml(
+    [
+      { title: "A&B", url: "https://a.com/?x=1&y=2", folder: "搜索", tags: "常用,国内", desc: "说明" },
+      { title: "无分类", url: "https://b.com", folder: "", tags: "", desc: "" },
+    ],
+    { now: 1700000000 },
+  );
+  const lines = html.split("\n");
+  assert.strictEqual(lines[0], "<!DOCTYPE NETSCAPE-Bookmark-file-1>");
+  assert.ok(html.includes('<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">'));
+  assert.ok(html.includes('ADD_DATE="1700000000"'));
+  assert.ok(html.includes("<DT><H3 ADD_DATE=\"1700000000\" LAST_MODIFIED=\"1700000000\">搜索</H3>"));
+  assert.ok(html.includes('<A HREF="https://a.com/?x=1&amp;y=2"'), "URL 中的 & 必须转义");
+  assert.ok(html.includes(">A&amp;B</A>"), "标题中的 & 必须转义");
+  assert.ok(html.includes('TAGS="常用,国内"'));
+  assert.ok(html.includes("<DD>说明"));
+  assert.ok(html.includes(">导入的书签</H3>"), "无分类归入默认文件夹");
+  assert.ok(html.trim().endsWith("</DL><p>"));
+});
+ok("bookmark: 空列表仍输出合法骨架", () => {
+  const html = V.buildBookmarksHtml([], { now: 1700000000 });
+  assert.ok(html.startsWith("<!DOCTYPE NETSCAPE-Bookmark-file-1>"));
+  assert.ok(html.includes("</DL><p>"));
+  assert.ok(!html.includes("<DT><A"));
+});
+
 /* ---------------- 结果 ---------------- */
 console.log(`\n通过 ${pass} 项，失败 ${fails.length} 项`);
 if (fails.length) {

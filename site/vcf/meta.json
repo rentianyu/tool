@@ -1,11 +1,11 @@
 {
-  "name": "表格转 vCard",
-  "summary": "表格粘贴或 CSV/TSV 文件 → 手机通讯录可导入的 .vcf",
+  "name": "表格转文件",
+  "summary": "表格粘贴或 CSV/TSV 文件 → 通讯录 .vcf / 浏览器书签 .html",
   "category": "文本处理",
   "icon": "☎",
   "order": 20,
-  "tags": ["vcf", "vcard", "contact", "contacts", "csv", "tsv", "excel"],
-  "keywords": ["表格", "通讯录", "联系人", "手机", "电话", "导入", "名片", "批量", "vcf", "vcard", "csv", "excel"],
+  "tags": ["vcf", "vcard", "contact", "contacts", "bookmark", "bookmarks", "html", "csv", "tsv", "excel"],
+  "keywords": ["表格", "通讯录", "联系人", "手机", "电话", "导入", "名片", "批量", "书签", "收藏夹", "浏览器", "网址", "导航", "vcf", "vcard", "bookmark", "csv", "excel"],
   "backend": false,
   "status": "stable",
   "since": "2026-11-26"

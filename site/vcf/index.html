@@ -12,6 +12,8 @@
   <style>
     .vcf-opts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 12.5px; color: var(--fg-dim); }
     .vcf-opts label { display: inline-flex; align-items: center; gap: 5px; }
+    .vcf-switch select { width: 100%; max-width: 320px; font-size: 14px; padding: 8px 10px; }
+    @media (max-width: 560px) { .vcf-switch select { max-width: none; } }
     #input { white-space: pre; overflow-x: auto; min-height: 150px; }
     .map-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; }
     .map-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -38,6 +40,16 @@
 </head>
 <body class="page-tool" data-tool="vcf">
   <main class="wrap">
+    <div class="panel vcf-switch">
+      <div class="panel-head"><span class="panel-title">输出类型</span></div>
+      <div class="row">
+        <select id="mode" aria-label="选择输出类型">
+          <option value="vcard">通讯录 vCard（.vcf）</option>
+          <option value="bookmark">浏览器书签（.html）</option>
+        </select>
+      </div>
+    </div>
+
     <div class="panel">
       <div class="panel-head">
         <span class="panel-title">表格数据</span>
@@ -51,8 +63,8 @@
       <div class="row" style="margin-top:10px">
         <div class="vcf-opts">
           <label><input type="checkbox" id="hasHeader" checked> 首行是表头</label>
-          <label><input type="checkbox" id="dedup" checked> 同号码去重</label>
-          <label>姓名拆分
+          <label><input type="checkbox" id="dedup" checked> 重复项去重</label>
+          <label id="nameSplit-wrap">姓名拆分
             <select id="nameSplit" style="width:auto;padding:4px 6px;font-size:12px">
               <option value="first" selected>首字为姓</option>
               <option value="none">不拆分</option>

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-26 07:18:06 +08",
+  "generated": "2026-11-26 21:22:58 +08",
   "count": 10,
   "tools": [
     {
@@ -67,8 +67,8 @@
     {
       "slug": "vcf",
       "url": "/vcf",
-      "name": "表格转 vCard",
-      "summary": "表格粘贴或 CSV/TSV 文件 → 手机通讯录可导入的 .vcf",
+      "name": "表格转文件",
+      "summary": "表格粘贴或 CSV/TSV 文件 → 通讯录 .vcf / 浏览器书签 .html",
       "category": "文本处理",
       "icon": "☎",
       "tags": [
@@ -76,6 +76,9 @@
         "vcard",
         "contact",
         "contacts",
+        "bookmark",
+        "bookmarks",
+        "html",
         "csv",
         "tsv",
         "excel"
@@ -89,8 +92,14 @@
         "导入",
         "名片",
         "批量",
+        "书签",
+        "收藏夹",
+        "浏览器",
+        "网址",
+        "导航",
         "vcf",
         "vcard",
+        "bookmark",
         "csv",
         "excel"
       ],

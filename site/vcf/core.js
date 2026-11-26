@@ -68,8 +68,8 @@ export const FIELDS = [
 const FIELD_MAP = new Map(FIELDS.map((f) => [f.key, f]));
 
 export function fieldLabel(key) {
-  const f = FIELD_MAP.get(key);
-  return f ? f.label : key;
+  const field = FIELD_MAP.get(key) || BOOKMARK_FIELD_MAP.get(key);
+  return field ? field.label : key;
 }
 
 /** 去掉单元格首尾空白、BOM、零宽字符 */
@@ -161,8 +161,8 @@ export function parseTable(text, { delimiter } = {}) {
   return rows.map((cells) => cells.map(cleanCell));
 }
 
-/** 根据表头猜每列字段；返回与列数等长的字段 key 数组 */
-export function guessFieldMap(headers) {
+/** 根据表头猜每列字段；返回与列数等长的字段 key 数组（fields 可传通讯录或书签字段集） */
+export function guessFieldMap(headers, fields = FIELDS) {
   const map = headers.map(() => "ignore");
   const used = new Set();
 
@@ -170,7 +170,7 @@ export function guessFieldMap(headers) {
   headers.forEach((header, index) => {
     const n = normHeader(header);
     if (!n) return;
-    const hit = FIELDS.find(
+    const hit = fields.find(
       (field) => field.key !== "ignore" && !used.has(field.key) && field.aliases.some((alias) => normHeader(alias) === n),
     );
     if (hit) {
@@ -184,7 +184,7 @@ export function guessFieldMap(headers) {
     if (map[index] !== "ignore") return;
     const n = normHeader(header);
     if (n.length < 2) return;
-    const hit = FIELDS.find((field) => {
+    const hit = fields.find((field) => {
       if (field.key === "ignore" || used.has(field.key)) return false;
       return field.aliases.some((alias) => {
         const an = normHeader(alias);
@@ -197,8 +197,8 @@ export function guessFieldMap(headers) {
     }
   });
 
-  // 兜底：整表没识别出姓名时，把第 0 列当姓名
-  if (!map.includes("name") && map.length && map[0] === "ignore") map[0] = "name";
+  // 兜底（仅通讯录字段集）：整表没识别出姓名时，把第 0 列当姓名
+  if (fields.some((f) => f.key === "name") && !map.includes("name") && map.length && map[0] === "ignore") map[0] = "name";
   return map;
 }
 
@@ -338,3 +338,135 @@ export function buildVCard(contact, { nameSplit = true } = {}) {
 export function buildVCards(contacts, options = {}) {
   return contacts.map((contact) => `${buildVCard(contact, options)}\r\n`).join("");
 }
+
+/* ================= 浏览器书签（Netscape Bookmark File Format） ================= */
+
+export const BOOKMARK_FIELDS = [
+  {
+    key: "title",
+    label: "书签名称",
+    aliases: ["名称", "标题", "书签名", "网页名称", "网站名称", "title", "name", "bookmark", "bookmarkname"],
+  },
+  {
+    key: "url",
+    label: "网址",
+    aliases: ["网址", "链接", "地址", "网站", "url", "link", "website", "web", "href", "域名", "网页地址"],
+  },
+  {
+    key: "folder",
+    label: "分类/文件夹",
+    aliases: ["分类", "文件夹", "目录", "分组", "类别", "category", "folder", "group", "collection"],
+  },
+  { key: "tags", label: "标签", aliases: ["标签", "tag", "tags", "关键词", "标记"] },
+  {
+    key: "desc",
+    label: "备注",
+    aliases: ["备注", "描述", "说明", "note", "desc", "description", "remark", "memo"],
+  },
+  { key: "ignore", label: "忽略此列", aliases: [] },
+];
+
+const BOOKMARK_FIELD_MAP = new Map(BOOKMARK_FIELDS.map((field) => [field.key, field]));
+
+/** 网址规范化：缺协议的自动补 https://，不像网址的返回空串 */
+export function normalizeUrl(raw) {
+  const s = cleanCell(raw).replace(/\s+/g, "");
+  if (!s) return "";
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(s)) return s; // http:// / https:// / ftp:// …
+  if (/^(mailto|tel|javascript|data):/i.test(s)) return s;
+  if (/^\/\//.test(s)) return `https:${s}`;
+  if (/^(?:[\w-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#].*)?$/i.test(s)) return `https://${s}`;
+  if (/^\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?(?:[/?#].*)?$/.test(s)) return `http://${s}`;
+  return "";
+}
+
+/**
+ * 行数据 → 书签条目
+ * @returns {{items: Array<{title,url,folder,tags,desc}>, skipped: number, duplicates: number}}
+ */
+export function buildBookmarks(dataRows, map, { dedup = true } = {}) {
+  const items = [];
+  const seen = new Set();
+  let skipped = 0;
+  let duplicates = 0;
+
+  const pick = (row, key) => {
+    const index = map.indexOf(key);
+    return index >= 0 ? cleanCell(row[index]) : "";
+  };
+
+  dataRows.forEach((row) => {
+    if (!row.some((cell) => cell)) return;
+    const url = normalizeUrl(pick(row, "url"));
+    if (!url) {
+      skipped += 1;
+      return;
+    }
+    if (dedup) {
+      const key = url.toLowerCase();
+      if (seen.has(key)) {
+        duplicates += 1;
+        return;
+      }
+      seen.add(key);
+    }
+    items.push({
+      title: pick(row, "title") || url,
+      url,
+      folder: pick(row, "folder"),
+      tags: pick(row, "tags"),
+      desc: pick(row, "desc"),
+    });
+  });
+
+  return { items, skipped, duplicates };
+}
+
+function escapeXml(text) {
+  return String(text == null ? "" : text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/**
+ * 书签条目 → Netscape Bookmarks HTML（Chrome / Edge / Firefox / Safari 均可导入）
+ * 条目按「分类」分组成文件夹，无分类的归入 folderName
+ */
+export function buildBookmarksHtml(items, { now, folderName = "导入的书签" } = {}) {
+  const stamp = Number.isFinite(now) ? Math.floor(now) : Math.floor(Date.now() / 1000);
+  const groups = new Map();
+  items.forEach((item) => {
+    const key = item.folder || folderName;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  });
+
+  const lines = [
+    "<!DOCTYPE NETSCAPE-Bookmark-file-1>",
+    "<!-- This is an automatically generated file. -->",
+    "<!-- 由 tool.xbta.cc 生成，可直接导入 Chrome / Edge / Firefox / Safari -->",
+    '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">',
+    "<TITLE>Bookmarks</TITLE>",
+    "<H1>Bookmarks</H1>",
+    "<DL><p>",
+  ];
+
+  groups.forEach((list, name) => {
+    lines.push(`    <DT><H3 ADD_DATE="${stamp}" LAST_MODIFIED="${stamp}">${escapeXml(name)}</H3>`);
+    lines.push("    <DL><p>");
+    list.forEach((item) => {
+      const tags = item.tags ? ` TAGS="${escapeXml(item.tags)}"` : "";
+      lines.push(
+        `        <DT><A HREF="${escapeXml(item.url)}" ADD_DATE="${stamp}"${tags}>${escapeXml(item.title)}</A>`,
+      );
+      if (item.desc) lines.push(`        <DD>${escapeXml(item.desc)}`);
+    });
+    lines.push("    </DL><p>");
+  });
+
+  lines.push("</DL><p>");
+  return `${lines.join("\n")}\n`;
+}
+
