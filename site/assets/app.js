@@ -7,6 +7,10 @@
 
 const THEME_KEY = "tool.theme";
 
+/** 联网情况说明：首页写在 templates/nav.html（静态首屏），工具页由外壳注入，两处文案需保持一致 */
+const NET_NOTE =
+  "页面首次打开需联网加载（其中只有 Cloudflare 的访问统计脚本会连外网，不涉及你输入的内容）；打开后可断网继续使用，所有转换都在浏览器本地完成，数据不上传、也无后端。";
+
 /* ---------------- 主题（默认白天） ---------------- */
 export function currentTheme() {
   return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -329,7 +333,8 @@ async function mountToolShell() {
         <button class="fav-btn fav-btn-inline" type="button" data-fav="${escapeHtml(slug)}" data-label="1" title="收藏到「我的收藏」">☆ 收藏</button>
       </div>
       <h1>${escapeHtml(meta.name || slug)}</h1>
-      ${meta.summary ? `<p>${escapeHtml(meta.summary)}</p>` : ""}`;
+      ${meta.summary ? `<p>${escapeHtml(meta.summary)}</p>` : ""}
+      <p class="net-note"><b>联网说明</b>　${NET_NOTE}</p>`;
     main.prepend(head);
     bindFavButtons(head);
     paintFavButtons();

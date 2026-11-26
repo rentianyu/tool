@@ -199,6 +199,23 @@ kbd {
 .nav-meta b { color: var(--fg-dim); font-weight: 600; }
 .nav-meta .dim { color: var(--fg-mute); }
 
+/* ---------- 联网说明 ---------- */
+.net-note {
+  display: block;
+  margin: 10px 0 0;
+  padding: 7px 10px;
+  border: 1px solid var(--line-soft);
+  border-left: 2px solid var(--accent);
+  border-radius: 5px;
+  background: var(--panel-2);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--fg-mute);
+}
+.net-note b { color: var(--fg-dim); font-weight: 600; }
+/* .tool-head p 的优先级更高，工具页这里要把字号/颜色再明确覆盖一次 */
+.tool-head .net-note { margin: 10px 0 0; font-size: 11.5px; line-height: 1.6; color: var(--fg-mute); }
+
 /* ---------- 工具分组 ---------- */
 .group { margin-top: 18px; }
 .group h2 {
